@@ -8,6 +8,7 @@ const PORT = 3000;
 
 const STATUS_FILE = path.join(__dirname, 'data', 'status.json');
 const MESSAGES_FILE = path.join(__dirname, 'data', 'messages.json');
+const KANBAN_FILE = path.join(__dirname, 'data', 'kanban.json');
 
 // Ensure data dir exists
 if (!fs.existsSync(path.join(__dirname, 'data'))) {
@@ -36,6 +37,17 @@ if (!fs.existsSync(STATUS_FILE)) {
 // Init messages file if missing
 if (!fs.existsSync(MESSAGES_FILE)) {
   fs.writeFileSync(MESSAGES_FILE, JSON.stringify([], null, 2));
+}
+
+// Init kanban file if missing
+if (!fs.existsSync(KANBAN_FILE)) {
+  fs.writeFileSync(KANBAN_FILE, JSON.stringify({
+    columns: [
+      {"id": "backlog", "title": "Backlog", "tasks": []},
+      {"id": "inprogress", "title": "In Progress", "tasks": []},
+      {"id": "done", "title": "Done", "tasks": []}
+    ]
+  }, null, 2));
 }
 
 app.use(express.json());
@@ -124,6 +136,122 @@ app.post('/api/messages', auth, (req, res) => {
     res.json({ ok: true, entry });
   } catch (err) {
     res.status(500).json({ error: 'failed to save message' });
+  }
+});
+
+// ===== KANBAN ENDPOINTS =====
+
+// Get kanban data
+app.get('/api/kanban', auth, (req, res) => {
+  try {
+    const data = JSON.parse(fs.readFileSync(KANBAN_FILE, 'utf8'));
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: 'failed to read kanban data' });
+  }
+});
+
+// Create a new task
+app.post('/api/kanban/task', auth, (req, res) => {
+  const { columnId, title, description } = req.body;
+  if (!columnId || !title) {
+    return res.status(400).json({ error: 'columnId and title are required' });
+  }
+
+  try {
+    const data = JSON.parse(fs.readFileSync(KANBAN_FILE, 'utf8'));
+    const column = data.columns.find(c => c.id === columnId);
+    if (!column) {
+      return res.status(404).json({ error: 'column not found' });
+    }
+
+    const task = {
+      id: Date.now().toString(),
+      title: title.trim(),
+      description: description ? description.trim() : '',
+      createdAt: new Date().toISOString()
+    };
+
+    column.tasks.push(task);
+    fs.writeFileSync(KANBAN_FILE, JSON.stringify(data, null, 2));
+    res.json({ ok: true, task });
+  } catch (err) {
+    res.status(500).json({ error: 'failed to create task' });
+  }
+});
+
+// Update a task
+app.put('/api/kanban/task/:id', auth, (req, res) => {
+  const { id } = req.params;
+  const { title, description, columnId } = req.body;
+
+  try {
+    const data = JSON.parse(fs.readFileSync(KANBAN_FILE, 'utf8'));
+
+    // Find the task and its current column
+    let task = null;
+    let sourceColumn = null;
+    for (const col of data.columns) {
+      const idx = col.tasks.findIndex(t => t.id === id);
+      if (idx !== -1) {
+        task = col.tasks[idx];
+        sourceColumn = col;
+        break;
+      }
+    }
+
+    if (!task) {
+      return res.status(404).json({ error: 'task not found' });
+    }
+
+    // Update fields
+    if (title !== undefined) task.title = title.trim();
+    if (description !== undefined) task.description = description.trim();
+
+    // Move to different column if columnId changed
+    if (columnId && columnId !== sourceColumn.id) {
+      const destColumn = data.columns.find(c => c.id === columnId);
+      if (!destColumn) {
+        return res.status(404).json({ error: 'destination column not found' });
+      }
+      // Remove from source
+      sourceColumn.tasks = sourceColumn.tasks.filter(t => t.id !== id);
+      // Add to destination
+      destColumn.tasks.push(task);
+    }
+
+    fs.writeFileSync(KANBAN_FILE, JSON.stringify(data, null, 2));
+    res.json({ ok: true, task });
+  } catch (err) {
+    res.status(500).json({ error: 'failed to update task' });
+  }
+});
+
+// Delete a task
+app.delete('/api/kanban/task/:id', auth, (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const data = JSON.parse(fs.readFileSync(KANBAN_FILE, 'utf8'));
+
+    let found = false;
+    for (const col of data.columns) {
+      const idx = col.tasks.findIndex(t => t.id === id);
+      if (idx !== -1) {
+        col.tasks.splice(idx, 1);
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      return res.status(404).json({ error: 'task not found' });
+    }
+
+    fs.writeFileSync(KANBAN_FILE, JSON.stringify(data, null, 2));
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: 'failed to delete task' });
   }
 });
 

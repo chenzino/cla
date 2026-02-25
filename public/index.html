@@ -276,6 +276,51 @@
       background: var(--red-dim);
     }
 
+    /* ===== TAB SWITCHER ===== */
+    .tab-switcher {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      width: fit-content;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 8px 20px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      letter-spacing: -0.01em;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .tab-btn.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      box-shadow: 0 2px 8px rgba(139,124,246,0.15);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
     /* ===== CARDS ===== */
     .cards {
       display: grid;
@@ -540,6 +585,310 @@
       box-shadow: none;
     }
 
+    /* ===== KANBAN BOARD ===== */
+    .kanban-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .kanban-toolbar-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .btn-add-task {
+      background: linear-gradient(135deg, var(--accent), #6366f1);
+      border: none;
+      color: white;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 2px 12px rgba(139,124,246,0.25);
+      letter-spacing: 0.01em;
+    }
+
+    .btn-add-task:hover {
+      box-shadow: 0 4px 24px rgba(139,124,246,0.4);
+      transform: translateY(-1px);
+    }
+
+    .kanban-add-form {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kanban-add-form.visible {
+      display: block;
+    }
+
+    .kanban-add-form::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    }
+
+    .kanban-form-row {
+      margin-bottom: 12px;
+    }
+
+    .kanban-form-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .kanban-form-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .kanban-form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      border-radius: 8px;
+      outline: none;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .kanban-form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .kanban-form-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    textarea.kanban-form-input {
+      resize: none;
+      min-height: 60px;
+      line-height: 1.5;
+    }
+
+    .kanban-form-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 14px;
+    }
+
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      min-height: 300px;
+    }
+
+    @media (max-width: 700px) {
+      .kanban-board { grid-template-columns: 1fr; }
+    }
+
+    .kanban-column {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .kanban-column::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    }
+
+    .kanban-column.drag-over {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-dim);
+    }
+
+    .kanban-col-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kanban-col-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    .kanban-col-count {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      background: rgba(255,255,255,0.04);
+      padding: 2px 8px;
+      border-radius: 10px;
+      min-width: 22px;
+      text-align: center;
+    }
+
+    .kanban-col-tasks {
+      padding: 10px;
+      flex: 1;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .kanban-task-card {
+      background: var(--surface-solid);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      cursor: grab;
+      transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+    }
+
+    .kanban-task-card:hover {
+      border-color: var(--border-hover);
+      background: rgba(255,255,255,0.04);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .kanban-task-card.dragging {
+      opacity: 0.4;
+      transform: rotate(2deg);
+    }
+
+    .kanban-task-title {
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 4px;
+      padding-right: 20px;
+      line-height: 1.4;
+    }
+
+    .kanban-task-desc {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .kanban-task-actions {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .kanban-task-btn {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--text-tertiary);
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .kanban-task-btn:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+      background: var(--surface-hover);
+    }
+
+    .kanban-task-btn.delete-btn:hover {
+      border-color: rgba(251,113,133,0.3);
+      color: var(--red);
+      background: var(--red-dim);
+    }
+
+    .kanban-task-delete {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      opacity: 0;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .kanban-task-card:hover .kanban-task-delete {
+      opacity: 1;
+    }
+
+    .kanban-task-delete:hover {
+      color: var(--red);
+      background: var(--red-dim);
+    }
+
+    .kanban-empty {
+      color: var(--text-tertiary);
+      font-size: 0.75rem;
+      text-align: center;
+      padding: 24px 12px;
+      font-weight: 400;
+    }
+
     /* ===== FOOTER ===== */
     .footer {
       font-size: 0.7rem;
@@ -631,48 +980,84 @@
       </div>
     </header>
 
-    <div class="cards fade-in">
-      <div class="card">
-        <div class="label">Status</div>
-        <div class="value" id="card-status"><span class="status-dot active"></span>Loading</div>
-      </div>
-      <div class="card">
-        <div class="label">Usage</div>
-        <div class="value" id="card-limit">--</div>
-      </div>
-      <div class="card">
-        <div class="label">Resets In</div>
-        <div class="value" id="card-reset">--</div>
-      </div>
-      <div class="card">
-        <div class="label">Last Sync</div>
-        <div class="value dim" id="card-updated">--</div>
-      </div>
+    <!-- TAB SWITCHER -->
+    <div class="tab-switcher fade-in">
+      <button class="tab-btn active" data-tab="monitor" onclick="switchTab('monitor')">Monitor</button>
+      <button class="tab-btn" data-tab="kanban" onclick="switchTab('kanban')">Kanban</button>
     </div>
 
-    <div class="section fade-in">
-      <div class="section-header">Current Activity</div>
-      <div class="notes-box" id="notes-box">Loading...</div>
-    </div>
-
-    <div class="section fade-in">
-      <div class="section-header">
-        Activity Log
-        <button class="btn" onclick="fetchStatus()">Refresh</button>
-      </div>
-      <div class="log-viewer" id="log-viewer">
-        <div class="log-entry"><span class="log-msg" style="color:var(--text-tertiary)">Loading...</span></div>
-      </div>
-    </div>
-
-    <div class="section fade-in">
-      <div class="section-header">Message Claude</div>
-      <div class="msg-area">
-        <textarea id="msg-input" placeholder="Send a message or instruction to Claude Code..."></textarea>
-        <div class="send-row">
-          <span class="hint">Delivered directly to the active session</span>
-          <button class="btn-send" id="send-btn" onclick="sendMessage()">Send</button>
+    <!-- MONITOR TAB -->
+    <div id="tab-monitor" class="tab-content active">
+      <div class="cards fade-in">
+        <div class="card">
+          <div class="label">Status</div>
+          <div class="value" id="card-status"><span class="status-dot active"></span>Loading</div>
         </div>
+        <div class="card">
+          <div class="label">Usage</div>
+          <div class="value" id="card-limit">--</div>
+        </div>
+        <div class="card">
+          <div class="label">Resets In</div>
+          <div class="value" id="card-reset">--</div>
+        </div>
+        <div class="card">
+          <div class="label">Last Sync</div>
+          <div class="value dim" id="card-updated">--</div>
+        </div>
+      </div>
+
+      <div class="section fade-in">
+        <div class="section-header">Current Activity</div>
+        <div class="notes-box" id="notes-box">Loading...</div>
+      </div>
+
+      <div class="section fade-in">
+        <div class="section-header">
+          Activity Log
+          <button class="btn" onclick="fetchStatus()">Refresh</button>
+        </div>
+        <div class="log-viewer" id="log-viewer">
+          <div class="log-entry"><span class="log-msg" style="color:var(--text-tertiary)">Loading...</span></div>
+        </div>
+      </div>
+
+      <div class="section fade-in">
+        <div class="section-header">Message Claude</div>
+        <div class="msg-area">
+          <textarea id="msg-input" placeholder="Send a message or instruction to Claude Code..."></textarea>
+          <div class="send-row">
+            <span class="hint">Delivered directly to the active session</span>
+            <button class="btn-send" id="send-btn" onclick="sendMessage()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KANBAN TAB -->
+    <div id="tab-kanban" class="tab-content">
+      <div class="kanban-toolbar fade-in">
+        <span class="kanban-toolbar-title">Task Board</span>
+        <button class="btn-add-task" onclick="toggleAddForm()">+ Add Task</button>
+      </div>
+
+      <div class="kanban-add-form fade-in" id="kanban-add-form">
+        <div class="kanban-form-row">
+          <label class="kanban-form-label">Title</label>
+          <input type="text" class="kanban-form-input" id="kanban-task-title" placeholder="Task title...">
+        </div>
+        <div class="kanban-form-row">
+          <label class="kanban-form-label">Description (optional)</label>
+          <textarea class="kanban-form-input" id="kanban-task-desc" placeholder="Brief description..."></textarea>
+        </div>
+        <div class="kanban-form-actions">
+          <button class="btn" onclick="toggleAddForm()">Cancel</button>
+          <button class="btn-send" onclick="addKanbanTask()" style="padding:8px 18px;font-size:0.78rem;">Save Task</button>
+        </div>
+      </div>
+
+      <div class="kanban-board fade-in" id="kanban-board">
+        <!-- Columns rendered by JS -->
       </div>
     </div>
 
@@ -685,6 +1070,7 @@
 
   <script>
     let authToken = null;
+    let kanbanData = null;
 
     const pwInput = document.getElementById('password-input');
     const authErr = document.getElementById('auth-error');
@@ -738,6 +1124,20 @@
       });
     }
 
+    // ===== TAB SWITCHING =====
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+      });
+      document.querySelectorAll('.tab-content').forEach(el => {
+        el.classList.toggle('active', el.id === 'tab-' + tab);
+      });
+      if (tab === 'kanban') {
+        fetchKanban();
+      }
+    }
+
+    // ===== MONITOR FUNCTIONS =====
     async function fetchStatus() {
       const connEl = document.getElementById('conn-status');
       try {
@@ -853,6 +1253,199 @@
 
     document.getElementById('msg-input').addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+
+    // ===== KANBAN FUNCTIONS =====
+    const COLUMN_ORDER = ['backlog', 'inprogress', 'done'];
+
+    async function fetchKanban() {
+      try {
+        const resp = await api('/api/kanban');
+        if (resp.status === 401) { logout(); return; }
+        kanbanData = await resp.json();
+        renderKanban();
+      } catch (err) {
+        toast('Failed to load kanban');
+      }
+    }
+
+    function renderKanban() {
+      const board = document.getElementById('kanban-board');
+      if (!kanbanData || !kanbanData.columns) {
+        board.innerHTML = '<div class="kanban-empty">No data available</div>';
+        return;
+      }
+
+      board.innerHTML = kanbanData.columns.map(col => {
+        const colIdx = COLUMN_ORDER.indexOf(col.id);
+        const canMoveLeft = colIdx > 0;
+        const canMoveRight = colIdx < COLUMN_ORDER.length - 1;
+
+        const tasksHtml = col.tasks.length === 0
+          ? '<div class="kanban-empty">No tasks yet</div>'
+          : col.tasks.map(task => {
+            const descHtml = task.description
+              ? `<div class="kanban-task-desc">${esc(task.description)}</div>`
+              : '';
+            return `<div class="kanban-task-card" draggable="true"
+                         data-task-id="${task.id}"
+                         ondragstart="onDragStart(event)"
+                         ondragend="onDragEnd(event)">
+              <button class="kanban-task-delete" onclick="deleteKanbanTask('${task.id}')" title="Delete">x</button>
+              <div class="kanban-task-title">${esc(task.title)}</div>
+              ${descHtml}
+              <div class="kanban-task-actions">
+                ${canMoveLeft
+                  ? `<button class="kanban-task-btn" onclick="moveTask('${task.id}','${COLUMN_ORDER[colIdx - 1]}')" title="Move left">&larr;</button>`
+                  : ''}
+                ${canMoveRight
+                  ? `<button class="kanban-task-btn" onclick="moveTask('${task.id}','${COLUMN_ORDER[colIdx + 1]}')" title="Move right">&rarr;</button>`
+                  : ''}
+              </div>
+            </div>`;
+          }).join('');
+
+        return `<div class="kanban-column"
+                     data-column-id="${col.id}"
+                     ondragover="onDragOver(event)"
+                     ondragenter="onDragEnter(event)"
+                     ondragleave="onDragLeave(event)"
+                     ondrop="onDrop(event)">
+          <div class="kanban-col-header">
+            <span class="kanban-col-title">${esc(col.title)}</span>
+            <span class="kanban-col-count">${col.tasks.length}</span>
+          </div>
+          <div class="kanban-col-tasks">
+            ${tasksHtml}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function toggleAddForm() {
+      const form = document.getElementById('kanban-add-form');
+      form.classList.toggle('visible');
+      if (form.classList.contains('visible')) {
+        document.getElementById('kanban-task-title').focus();
+      } else {
+        document.getElementById('kanban-task-title').value = '';
+        document.getElementById('kanban-task-desc').value = '';
+      }
+    }
+
+    async function addKanbanTask() {
+      const titleInput = document.getElementById('kanban-task-title');
+      const descInput = document.getElementById('kanban-task-desc');
+      const title = titleInput.value.trim();
+      if (!title) { titleInput.focus(); return; }
+
+      try {
+        const resp = await api('/api/kanban/task', {
+          method: 'POST',
+          body: JSON.stringify({
+            columnId: 'backlog',
+            title: title,
+            description: descInput.value.trim()
+          })
+        });
+        if (resp.ok) {
+          titleInput.value = '';
+          descInput.value = '';
+          document.getElementById('kanban-add-form').classList.remove('visible');
+          toast('Task created');
+          fetchKanban();
+        } else {
+          toast('Failed to create task');
+        }
+      } catch (err) {
+        toast('Connection error');
+      }
+    }
+
+    async function moveTask(taskId, targetColumnId) {
+      try {
+        const resp = await api('/api/kanban/task/' + taskId, {
+          method: 'PUT',
+          body: JSON.stringify({ columnId: targetColumnId })
+        });
+        if (resp.ok) {
+          fetchKanban();
+        } else {
+          toast('Failed to move task');
+        }
+      } catch (err) {
+        toast('Connection error');
+      }
+    }
+
+    async function deleteKanbanTask(taskId) {
+      try {
+        const resp = await api('/api/kanban/task/' + taskId, {
+          method: 'DELETE'
+        });
+        if (resp.ok) {
+          toast('Task deleted');
+          fetchKanban();
+        } else {
+          toast('Failed to delete task');
+        }
+      } catch (err) {
+        toast('Connection error');
+      }
+    }
+
+    // ===== DRAG AND DROP =====
+    let draggedTaskId = null;
+
+    function onDragStart(e) {
+      draggedTaskId = e.target.dataset.taskId;
+      e.target.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', draggedTaskId);
+    }
+
+    function onDragEnd(e) {
+      e.target.classList.remove('dragging');
+      draggedTaskId = null;
+      document.querySelectorAll('.kanban-column').forEach(col => {
+        col.classList.remove('drag-over');
+      });
+    }
+
+    function onDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    }
+
+    function onDragEnter(e) {
+      e.preventDefault();
+      const col = e.target.closest('.kanban-column');
+      if (col) col.classList.add('drag-over');
+    }
+
+    function onDragLeave(e) {
+      const col = e.target.closest('.kanban-column');
+      if (col && !col.contains(e.relatedTarget)) {
+        col.classList.remove('drag-over');
+      }
+    }
+
+    function onDrop(e) {
+      e.preventDefault();
+      const col = e.target.closest('.kanban-column');
+      if (!col) return;
+      col.classList.remove('drag-over');
+
+      const taskId = e.dataTransfer.getData('text/plain');
+      const targetColumnId = col.dataset.columnId;
+      if (taskId && targetColumnId) {
+        moveTask(taskId, targetColumnId);
+      }
+    }
+
+    // Handle Enter key in kanban title input
+    document.getElementById('kanban-task-title').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); addKanbanTask(); }
     });
   </script>
 </body>
