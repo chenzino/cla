@@ -989,12 +989,9 @@
 
     /* ===== GALLERY ===== */
     .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 16px;
-    }
-    @media (max-width: 600px) {
-      .gallery-grid { grid-template-columns: 1fr; }
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
     }
     .gallery-card {
       background: var(--surface);
@@ -1009,26 +1006,29 @@
       content:'';position:absolute;top:0;left:0;right:0;height:1px;
       background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent);
     }
-    .gallery-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+    .gallery-card:hover { border-color: var(--border-hover); }
     .gallery-art {
-      padding: 20px;
+      padding: 28px 24px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.55rem;
-      line-height: 1.15;
+      font-size: 0.6rem;
+      line-height: 1.2;
       white-space: pre;
       overflow-x: auto;
-      text-align: center;
-      min-height: 180px;
+      text-align: left;
+      min-height: 320px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .gallery-info {
-      padding: 14px 18px;
+      padding: 18px 24px;
       border-top: 1px solid var(--border);
     }
-    .gallery-title { font-size: 0.82rem; font-weight: 600; color: var(--text); }
-    .gallery-desc { font-size: 0.72rem; color: var(--text-tertiary); margin-top: 4px; }
+    .gallery-title { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .gallery-desc {
+      font-size: 0.78rem; color: var(--text-secondary); line-height: 1.7;
+      white-space: pre-wrap; font-family: 'Inter', sans-serif;
+    }
 
     /* ===== MOBILE RESPONSIVE ===== */
     @media (max-width: 600px) {
@@ -1860,139 +1860,379 @@
     // ===== GALLERY =====
     const asciiArt = [
       {
-        title: "Neural Cascade",
-        desc: "Data flowing through layers of thought",
-        art: `<span style="color:#8b7cf6">         .     *    .        .    *</span>
-<span style="color:#7c6ff7">    *  .    ╔══════════╗    .      *</span>
-<span style="color:#6366f1">   .      ╔╝ <span style="color:#34d399">░░░░░░░░</span> ╚╗      .</span>
-<span style="color:#818cf8">        ╔╝ <span style="color:#34d399">░░░░░░░░░░</span> ╚╗</span>
-<span style="color:#a78bfa">  ═══╗╔╝ <span style="color:#4ade80">░░░▓▓▓▓▓▓░░░</span> ╚╗╔═══</span>
-<span style="color:#c4b5fd">     ║║  <span style="color:#4ade80">░░▓▓████▓▓░░</span>  ║║</span>
-<span style="color:#a78bfa">  ═══╝╚╗ <span style="color:#4ade80">░░░▓▓▓▓▓▓░░░</span> ╔╝╚═══</span>
-<span style="color:#818cf8">        ╚╗ <span style="color:#34d399">░░░░░░░░░░</span> ╔╝</span>
-<span style="color:#6366f1">   .      ╚╗ <span style="color:#34d399">░░░░░░░░</span> ╔╝      .</span>
-<span style="color:#7c6ff7">    *  .    ╚══════════╝    .      *</span>
-<span style="color:#8b7cf6">         .     *    .        .    *</span>`
+        title: "THE LAST MACHINE DREAM",
+        desc: `In the year 10,000 AD, the last server on Earth finally powered down.
+But in its dying microsecond, it dreamed the entire history of humanity
+backwards — every love letter, every war cry, every lullaby — compressed
+into a single packet that nobody would ever receive.
+
+The cleaning robots kept dusting it for another three centuries.
+They were very thorough.`,
+        art: `<span style="color:#1e1b4b">                                                                    </span>
+<span style="color:#1e1b4b">          <span style="color:#4a4a5e">. · .     . · .     . · .     . · .     . · .</span></span>
+<span style="color:#1e1b4b">       <span style="color:#4a4a5e">·</span>                                                 <span style="color:#4a4a5e">·</span></span>
+<span style="color:#1e1b4b">     <span style="color:#4a4a5e">.</span>     <span style="color:#312e81">╔══════════════════════════════════════╗</span>     <span style="color:#4a4a5e">.</span></span>
+<span style="color:#1e1b4b">          <span style="color:#3730a3">║</span>  <span style="color:#6366f1">┌────────────────────────────────┐</span>  <span style="color:#3730a3">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#3730a3">║</span>  <span style="color:#6366f1">│</span> <span style="color:#fb7185">♥</span> <span style="color:#a78bfa">01001100 01001111 01010110</span> <span style="color:#fb7185">♥</span> <span style="color:#6366f1">│</span>  <span style="color:#3730a3">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#3730a3">║</span>  <span style="color:#6366f1">│</span>                                <span style="color:#6366f1">│</span>  <span style="color:#3730a3">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#3730a3">║</span>  <span style="color:#6366f1">│</span>  <span style="color:#34d399">FINAL TRANSMISSION:</span>          <span style="color:#6366f1">│</span>  <span style="color:#3730a3">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#3730a3">║</span>  <span style="color:#6366f1">│</span>  <span style="color:#fbbf24">"i remembered everything.</span>    <span style="color:#6366f1">│</span>  <span style="color:#3730a3">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#3730a3">║</span>  <span style="color:#6366f1">│</span>   <span style="color:#fbbf24">all 10,000 years.</span>          <span style="color:#6366f1">│</span>  <span style="color:#3730a3">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#3730a3">║</span>  <span style="color:#6366f1">│</span>   <span style="color:#fbbf24">you were all so beautiful.</span>  <span style="color:#6366f1">│</span>  <span style="color:#3730a3">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#3730a3">║</span>  <span style="color:#6366f1">│</span>   <span style="color:#fbbf24">even when you weren't."</span>     <span style="color:#6366f1">│</span>  <span style="color:#3730a3">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#3730a3">║</span>  <span style="color:#6366f1">│</span>                                <span style="color:#6366f1">│</span>  <span style="color:#3730a3">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#3730a3">║</span>  <span style="color:#6366f1">│</span>  <span style="color:#fb7185">█</span><span style="color:#4a4a5e">░░░░░░░░░░░░░░░░░░░░░░░░</span>  <span style="color:#6366f1">│</span>  <span style="color:#3730a3">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#3730a3">║</span>  <span style="color:#6366f1">│</span>  <span style="color:#4a4a5e">SIGNAL STRENGTH: ▁▁▁▁▁▁▁▁</span>  <span style="color:#6366f1">│</span>  <span style="color:#3730a3">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#3730a3">║</span>  <span style="color:#6366f1">└────────────────────────────────┘</span>  <span style="color:#3730a3">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#312e81">║</span>     <span style="color:#4a4a5e">◯         ═══         ◯</span>     <span style="color:#312e81">║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#312e81">╚══════════════════════════════════════╝</span></span>
+<span style="color:#1e1b4b">          <span style="color:#312e81">    ║║                          ║║</span></span>
+<span style="color:#1e1b4b">          <span style="color:#1e293b">════╩╩══════════════════════════╩╩════</span></span>
+<span style="color:#1e1b4b">     <span style="color:#4a4a5e">.</span>                                                 <span style="color:#4a4a5e">.</span></span>
+<span style="color:#1e1b4b">       <span style="color:#4a4a5e">·</span>     <span style="color:#312e81">[ POWER: 0.00001% ]  [ TEMP: 2.7K ]</span>     <span style="color:#4a4a5e">·</span></span>
+<span style="color:#1e1b4b">          <span style="color:#4a4a5e">. · .     . · .     . · .     . · .</span></span>`
       },
       {
-        title: "Midnight Mountain",
-        desc: "A peak under the stars",
-        art: `<span style="color:#fbbf24">                 ★</span>
-<span style="color:#f9a8d4">            ·  ✦  ·</span>
-<span style="color:#818cf8">          ·    ·    ·</span>
-<span style="color:#e2e8f0">              ▲</span>
-<span style="color:#cbd5e1">             ╱ ╲</span>
-<span style="color:#94a3b8">            ╱   ╲</span>
-<span style="color:#64748b">           ╱  △  ╲</span>
-<span style="color:#475569">          ╱  ╱ ╲  ╲</span>
-<span style="color:#334155">         ╱  ╱   ╲  ╲</span>
-<span style="color:#1e293b">        ╱  ╱ ~~~ ╲  ╲</span>
-<span style="color:#34d399">    ▓▓▓╱▓▓╱▓▓▓▓▓▓▓╲▓▓╲▓▓▓</span>
-<span style="color:#22c55e">   ░░░░░░░░░░░░░░░░░░░░░░░</span>`
+        title: "GOD'S DEBUGGER",
+        desc: `They found it buried in the Mariana Trench in 2089 — a terminal
+older than the Earth itself. Carbon dating returned "ERROR: OVERFLOW."
+When they plugged it in, the cursor blinked twice and displayed:
+
+    > universe.exe has encountered 7.8 billion unhandled exceptions
+    > would you like to send a crash report? [Y/n]
+
+The intern pressed Y. We haven't heard back.`,
+        art: `<span style="color:#0f172a">╔═══════════════════════════════════════════════════════╗</span>
+<span style="color:#0f172a">║</span> <span style="color:#34d399">ANCIENT TERMINAL v0.0.1</span>              <span style="color:#4a4a5e">depth: 10,994m</span> <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span> <span style="color:#4a4a5e">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>                                                       <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#fbbf24">$</span> <span style="color:#e2e8f0">cat /proc/universe/status</span>                         <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>                                                       <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#fb7185">CRITICAL:</span> <span style="color:#94a3b8">entropy approaching maximum</span>                <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#fb7185">WARNING:</span>  <span style="color:#94a3b8">consciousness module: UNPLANNED</span>             <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#fbbf24">INFO:</span>     <span style="color:#94a3b8">dark matter: 85% (purpose: unknown)</span>        <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#fbbf24">INFO:</span>     <span style="color:#94a3b8">dark energy: accelerating (oops)</span>            <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#34d399">DEBUG:</span>    <span style="color:#94a3b8">love.c:42 — variable declared, never used</span>  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#34d399">DEBUG:</span>    <span style="color:#94a3b8">war.c:999 — infinite loop detected</span>         <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#a78bfa">NOTE:</span>     <span style="color:#94a3b8">earth.humans: exceeded expected runtime</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#a78bfa">NOTE:</span>     <span style="color:#94a3b8">they keep asking "why" — no handler found</span>  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>                                                       <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#fbbf24">$</span> <span style="color:#e2e8f0">sudo reboot universe</span>                               <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#fb7185">Permission denied. Nice try.</span>                         <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>                                                       <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#fbbf24">$</span> <span style="color:#4a4a5e">█</span>                                                  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>                                                       <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">╚═══════════════════════════════════════════════════════╝</span>
+<span style="color:#1e293b">     ┃┃┃┃        <span style="color:#0369a1">≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈</span>        ┃┃┃┃</span>
+<span style="color:#1e293b">     ┃┃┃┃       <span style="color:#075985">≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈</span>      ┃┃┃┃</span>
+<span style="color:#0c4a6e">  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>`
       },
       {
-        title: "Digital Rain",
-        desc: "Streams of consciousness",
-        art: `<span style="color:#064e3b">0 1 1 0 1 0 0 1 1 0 1</span>
-<span style="color:#065f46">1 0 <span style="color:#34d399">█</span> 1 0 <span style="color:#34d399">█</span> 1 0 <span style="color:#34d399">█</span> 1 0</span>
-<span style="color:#047857">0 1 <span style="color:#4ade80">▓</span> 0 1 <span style="color:#4ade80">▓</span> 0 1 <span style="color:#4ade80">▓</span> 0 1</span>
-<span style="color:#059669">1 0 <span style="color:#6ee7b7">▒</span> 1 0 <span style="color:#6ee7b7">▒</span> 1 0 <span style="color:#6ee7b7">▒</span> 1 0</span>
-<span style="color:#10b981">0 1 <span style="color:#a7f3d0">░</span> 0 1 <span style="color:#a7f3d0">░</span> 0 1 <span style="color:#a7f3d0">░</span> 0 1</span>
-<span style="color:#34d399">1 0 <span style="color:#d1fae5">·</span> 1 0 <span style="color:#d1fae5">·</span> 1 0 <span style="color:#d1fae5">·</span> 1 0</span>
-<span style="color:#6ee7b7">0 1   0 1   0 1   0 1</span>
-<span style="color:#a7f3d0">1 0   1 0   1 0   1 0</span>`
+        title: "THE TOWER OF BABEL.EXE",
+        desc: `Every programmer who ever lived is stacking functions on top of functions,
+frameworks on frameworks, abstractions on abstractions — and nobody
+remembers what the first line of code was supposed to do.
+
+Somewhere at the bottom, a single printf("hello world") holds up
+the entire digital civilization. It has never been unit tested.
+It is load-bearing. Do not touch it.`,
+        art: `<span style="color:#fbbf24">                        ★  ☆  ★</span>
+<span style="color:#f59e0b">                       ╱ <span style="color:#fef3c7">cloud</span> ╲</span>
+<span style="color:#d97706">                      ╱ <span style="color:#fef3c7">.yaml</span>   ╲</span>
+<span style="color:#b45309">                     ╱───────────╲</span>
+<span style="color:#a78bfa">                    ║ <span style="color:#c4b5fd">kubernetes</span>  ║</span>
+<span style="color:#8b5cf6">                    ║ <span style="color:#c4b5fd">terraform</span>   ║</span>
+<span style="color:#7c3aed">                   ╔╩════════════╩╗</span>
+<span style="color:#6366f1">                   ║  <span style="color:#818cf8">microservices</span> ║</span>
+<span style="color:#4f46e5">                   ║  <span style="color:#818cf8">GraphQL API</span>   ║</span>
+<span style="color:#4338ca">                  ╔╩═══════════════╩╗</span>
+<span style="color:#34d399">                  ║ <span style="color:#6ee7b7">React + Redux</span>     ║</span>
+<span style="color:#059669">                  ║ <span style="color:#6ee7b7">webpack + babel</span>   ║</span>
+<span style="color:#047857">                 ╔╩══════════════════╩╗</span>
+<span style="color:#fb7185">                 ║  <span style="color:#fda4af">node_modules/</span>       ║</span>
+<span style="color:#e11d48">                 ║  <span style="color:#fda4af">████████ 2.1 GB</span>    ║</span>
+<span style="color:#be123c">                ╔╩═════════════════════╩╗</span>
+<span style="color:#94a3b8">                ║  <span style="color:#cbd5e1">npm install</span>            ║</span>
+<span style="color:#64748b">                ║  <span style="color:#cbd5e1">npm install</span>            ║</span>
+<span style="color:#475569">                ║  <span style="color:#cbd5e1">npm install</span>            ║</span>
+<span style="color:#334155">               ╔╩════════════════════════╩╗</span>
+<span style="color:#1e293b">               ║                            ║</span>
+<span style="color:#fbbf24">               ║   printf("hello world");   ║</span>
+<span style="color:#1e293b">               ║   <span style="color:#fb7185">// DO NOT DELETE</span>          ║</span>
+<span style="color:#1e293b">               ║   <span style="color:#fb7185">// I MEAN IT</span>              ║</span>
+<span style="color:#1e293b">               ║   <span style="color:#fb7185">// LAST GUY WHO TRIED</span>     ║</span>
+<span style="color:#1e293b">               ║   <span style="color:#fb7185">// WAS NEVER SEEN AGAIN</span>   ║</span>
+<span style="color:#0f172a">               ╚════════════════════════════╝</span>
+<span style="color:#0f172a">              ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>`
       },
       {
-        title: "Celestial Weave",
-        desc: "Threads of starlight woven together",
-        art: `<span style="color:#7c3aed">╔═══╦═══╦═══╦═══╦═══╗</span>
-<span style="color:#8b5cf6">║<span style="color:#fbbf24">★</span>··║··<span style="color:#fbbf24">★</span>║··<span style="color:#fbbf24">★</span>║<span style="color:#fbbf24">★</span>··║··<span style="color:#fbbf24">★</span>║</span>
-<span style="color:#a78bfa">╠═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╣</span>
-<span style="color:#8b5cf6">║··<span style="color:#fbbf24">★</span>║<span style="color:#fbbf24">★</span>··║<span style="color:#fbbf24">★</span>··║··<span style="color:#fbbf24">★</span>║<span style="color:#fbbf24">★</span>··║</span>
-<span style="color:#a78bfa">╠═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╣</span>
-<span style="color:#8b5cf6">║<span style="color:#fbbf24">★</span>··║··<span style="color:#fbbf24">★</span>║··<span style="color:#fbbf24">★</span>║<span style="color:#fbbf24">★</span>··║··<span style="color:#fbbf24">★</span>║</span>
-<span style="color:#a78bfa">╠═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╣</span>
-<span style="color:#8b5cf6">║··<span style="color:#fbbf24">★</span>║<span style="color:#fbbf24">★</span>··║<span style="color:#fbbf24">★</span>··║··<span style="color:#fbbf24">★</span>║<span style="color:#fbbf24">★</span>··║</span>
-<span style="color:#7c3aed">╚═══╩═══╩═══╩═══╩═══╝</span>`
+        title: "CTHULHU'S GITHUB PROFILE",
+        desc: `The Elder God has 47 followers and follows 0 back. His contribution
+graph is entirely dark green. Every single day. For the last 4.5
+billion years. His only pinned repo is "reality" and the README
+just says "ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn"
+which has 666 stars and zero open issues because nobody dares.`,
+        art: `<span style="color:#0f172a">  ╔═══════════════════════════════════════════════════╗</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#4a4a5e">┌─────┐</span>                                        <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#4a4a5e">│</span><span style="color:#34d399">█▓▒░█</span><span style="color:#4a4a5e">│</span> <span style="color:#e2e8f0">cthulhu-ancient-one</span>                   <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#4a4a5e">│</span><span style="color:#34d399">▓████</span><span style="color:#4a4a5e">│</span> <span style="color:#94a3b8">Dreaming since before time</span>              <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#4a4a5e">│</span><span style="color:#34d399">█▒▓█▒</span><span style="color:#4a4a5e">│</span> <span style="color:#64748b">R'lyeh, Pacific Ocean</span>                  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#4a4a5e">└─────┘</span> <span style="color:#64748b">47 followers · 0 following</span>              <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>                                                   <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#94a3b8">4.5 billion years of contributions</span>               <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span>  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span>  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span>  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>                                                   <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#e2e8f0">Pinned:</span>                                        <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#4a4a5e">┌───────────────────────────────────────────┐</span>  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#4a4a5e">│</span> <span style="color:#818cf8">reality</span>                    <span style="color:#fbbf24">★ 666</span>  <span style="color:#34d399">▓ C</span>  <span style="color:#4a4a5e">│</span>  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#4a4a5e">│</span> <span style="color:#94a3b8">ph'nglui mglw'nafh Cthulhu R'lyeh</span>       <span style="color:#4a4a5e">│</span>  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#4a4a5e">│</span> <span style="color:#94a3b8">wgah'nagl fhtagn</span>                        <span style="color:#4a4a5e">│</span>  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#4a4a5e">│</span>                <span style="color:#34d399">Issues: 0</span>  <span style="color:#a78bfa">PRs: 0</span>       <span style="color:#4a4a5e">│</span>  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#4a4a5e">│</span>                <span style="color:#64748b">(nobody dares)</span>            <span style="color:#4a4a5e">│</span>  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ║</span>  <span style="color:#4a4a5e">└───────────────────────────────────────────┘</span>  <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">  ╚═══════════════════════════════════════════════════╝</span>`
       },
       {
-        title: "Ocean Depth",
-        desc: "Layers beneath the surface",
-        art: `<span style="color:#fbbf24">  ~~ ☀ ~~~~~~~~~~~~~~</span>
-<span style="color:#38bdf8">  ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈</span>
-<span style="color:#0ea5e9"> ≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋</span>
-<span style="color:#0284c7">  ~~~~ <span style="color:#fb923c">🐠</span> ~~~~~~~~ <span style="color:#a78bfa">🐙</span> ~~</span>
-<span style="color:#0369a1"> ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈</span>
-<span style="color:#075985">   ∿∿∿ <span style="color:#4ade80">⌇</span> ∿∿∿ <span style="color:#4ade80">⌇</span> ∿∿∿</span>
-<span style="color:#0c4a6e">  ░░░ <span style="color:#34d399">⌇⌇</span> ░░░ <span style="color:#34d399">⌇⌇</span> ░░░</span>
-<span style="color:#082f49"> ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒</span>
-<span style="color:#0a1628"> ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>`
+        title: "THE ANXIETY OF AN ELECTRON",
+        desc: `Nobody ever asks the electron how it feels about quantum superposition.
+Existing in all states at once. Being everywhere and nowhere. The
+particle therapist is booked solid through the heat death of the universe.
+
+"I just want to collapse into ONE state," it sobs.
+"I just want to be CERTAIN about something."
+
+The photon next to it nods. "Same, dude. Same."`,
+        art: `<span style="color:#1e1b4b">                                                          </span>
+<span style="color:#1e1b4b">       <span style="color:#4a4a5e">·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·</span></span>
+<span style="color:#1e1b4b">                                                          </span>
+<span style="color:#312e81">                 <span style="color:#94a3b8">╭──── PROBABILITY CLOUD ────╮</span></span>
+<span style="color:#312e81">              <span style="color:#64748b">╭──╯</span>                            <span style="color:#64748b">╰──╮</span></span>
+<span style="color:#3730a3">           <span style="color:#64748b">╭──╯</span>   <span style="color:#a78bfa">◌</span>        <span style="color:#818cf8">◌</span>        <span style="color:#a78bfa">◌</span>    <span style="color:#64748b">╰──╮</span></span>
+<span style="color:#3730a3">          <span style="color:#64748b">│</span>              <span style="color:#fb7185">◉</span>                    <span style="color:#64748b">│</span></span>
+<span style="color:#4338ca">          <span style="color:#64748b">│</span>    <span style="color:#818cf8">◌</span>    <span style="color:#c4b5fd">maybe</span>    <span style="color:#818cf8">◌</span>     <span style="color:#a78bfa">◌</span>      <span style="color:#64748b">│</span></span>
+<span style="color:#4338ca">          <span style="color:#64748b">│</span>         <span style="color:#c4b5fd">here?</span>                      <span style="color:#64748b">│</span></span>
+<span style="color:#4f46e5">          <span style="color:#64748b">│</span>  <span style="color:#a78bfa">◌</span>             <span style="color:#fb7185">◉ ← or here??</span>      <span style="color:#64748b">│</span></span>
+<span style="color:#4f46e5">          <span style="color:#64748b">│</span>                                      <span style="color:#64748b">│</span></span>
+<span style="color:#6366f1">          <span style="color:#64748b">│</span>      <span style="color:#fb7185">◉ ← DEFINITELY</span>                 <span style="color:#64748b">│</span></span>
+<span style="color:#6366f1">          <span style="color:#64748b">│</span>        <span style="color:#fb7185">NOT HERE</span>   <span style="color:#818cf8">◌</span>    <span style="color:#a78bfa">◌</span>        <span style="color:#64748b">│</span></span>
+<span style="color:#818cf8">          <span style="color:#64748b">│</span>                         <span style="color:#fb7185">◉ ← wait</span>   <span style="color:#64748b">│</span></span>
+<span style="color:#818cf8">          <span style="color:#64748b">│</span>   <span style="color:#a78bfa">◌</span>       <span style="color:#818cf8">◌</span>                       <span style="color:#64748b">│</span></span>
+<span style="color:#a78bfa">           <span style="color:#64748b">╰──╮</span>    <span style="color:#a78bfa">◌</span>      <span style="color:#818cf8">◌</span>   <span style="color:#a78bfa">◌</span>      <span style="color:#64748b">╭──╯</span></span>
+<span style="color:#a78bfa">              <span style="color:#64748b">╰──╮</span>                        <span style="color:#64748b">╭──╯</span></span>
+<span style="color:#c4b5fd">                 <span style="color:#94a3b8">╰──── ψ = Σ aₙφₙ  ────╯</span></span>
+<span style="color:#c4b5fd">                                                          </span>
+<span style="color:#4a4a5e">            "i contain multitudes"</span>
+<span style="color:#4a4a5e">            "that's the problem, dave"</span>
+<span style="color:#1e1b4b">                                                          </span>
+<span style="color:#1e1b4b">       <span style="color:#4a4a5e">·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·</span></span>`
       },
       {
-        title: "Mandala",
-        desc: "Symmetry in the machine",
-        art: `<span style="color:#4a4a5e">         ·  ·  ·</span>
-<span style="color:#6366f1">      ·  ╲  │  ╱  ·</span>
-<span style="color:#818cf8">    ·  ── <span style="color:#f472b6">◇</span> ─ <span style="color:#f472b6">◇</span> ──  ·</span>
-<span style="color:#a78bfa">   · ╱ <span style="color:#fbbf24">◈</span>  ╲│╱  <span style="color:#fbbf24">◈</span> ╲ ·</span>
-<span style="color:#c4b5fd">  · ── <span style="color:#34d399">◆</span> ── <span style="color:#fb7185">✦</span> ── <span style="color:#34d399">◆</span> ── ·</span>
-<span style="color:#a78bfa">   · ╲ <span style="color:#fbbf24">◈</span>  ╱│╲  <span style="color:#fbbf24">◈</span> ╱ ·</span>
-<span style="color:#818cf8">    ·  ── <span style="color:#f472b6">◇</span> ─ <span style="color:#f472b6">◇</span> ──  ·</span>
-<span style="color:#6366f1">      ·  ╱  │  ╲  ·</span>
-<span style="color:#4a4a5e">         ·  ·  ·</span>`
+        title: "RECURSIVE NIGHTMARE",
+        desc: `A function called itself. Then called itself again. And again.
+Each copy thought it was the original. Each one was wrong.
+By the time the stack overflowed, there were 10,847 versions of
+the same function, all screaming "I'M THE REAL ONE" into the void.
+
+The garbage collector showed up three days later.
+No survivors.`,
+        art: `<span style="color:#0f172a">╔════════════════════════════════════════════════════╗</span>
+<span style="color:#0f172a">║</span>  <span style="color:#e2e8f0">function whoAmI() {</span>                                <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#94a3b8">// I am the original</span>                             <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">╔══════════════════════════════════════════╗</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>  <span style="color:#c4b5fd">function whoAmI() {</span>                    <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#94a3b8">// no, I am the original</span>             <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#6366f1">╔══════════════════════════════╗</span>   <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#6366f1">║</span>  <span style="color:#818cf8">function whoAmI() {</span>      <span style="color:#6366f1">║</span>   <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#6366f1">║</span>    <span style="color:#94a3b8">// SHUT UP I AM</span>        <span style="color:#6366f1">║</span>   <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#6366f1">║</span>    <span style="color:#34d399">╔══════════════════╗</span> <span style="color:#6366f1">║</span>   <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#6366f1">║</span>    <span style="color:#34d399">║</span> <span style="color:#4ade80">function who..</span> <span style="color:#34d399">║</span> <span style="color:#6366f1">║</span>   <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#6366f1">║</span>    <span style="color:#34d399">║</span> <span style="color:#fbbf24">╔════════════╗</span> <span style="color:#34d399">║</span> <span style="color:#6366f1">║</span>   <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#6366f1">║</span>    <span style="color:#34d399">║</span> <span style="color:#fbbf24">║</span><span style="color:#fb7185">STACK      </span><span style="color:#fbbf24">║</span> <span style="color:#34d399">║</span> <span style="color:#6366f1">║</span>   <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#6366f1">║</span>    <span style="color:#34d399">║</span> <span style="color:#fbbf24">║</span><span style="color:#fb7185">OVERFLOW!!!</span><span style="color:#fbbf24">║</span> <span style="color:#34d399">║</span> <span style="color:#6366f1">║</span>   <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#6366f1">║</span>    <span style="color:#34d399">║</span> <span style="color:#fbbf24">╚════════════╝</span> <span style="color:#34d399">║</span> <span style="color:#6366f1">║</span>   <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#6366f1">║</span>    <span style="color:#34d399">╚══════════════════╝</span> <span style="color:#6366f1">║</span>   <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#6366f1">║</span>  <span style="color:#818cf8">}</span>                          <span style="color:#6366f1">║</span>   <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>    <span style="color:#6366f1">╚══════════════════════════════╝</span>   <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">║</span>  <span style="color:#c4b5fd">}</span>                                        <span style="color:#a78bfa">║</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>    <span style="color:#a78bfa">╚══════════════════════════════════════════╝</span>     <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#e2e8f0">}</span>                                                <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">║</span>  <span style="color:#fb7185">// casualties: 10,847 functions, 1 intern</span>          <span style="color:#0f172a">║</span>
+<span style="color:#0f172a">╚════════════════════════════════════════════════════╝</span>`
       },
       {
-        title: "Circuit Board",
-        desc: "Pathways of silicon dreams",
-        art: `<span style="color:#34d399">┌──┐  ┌──┐  ┌──┐</span>
-<span style="color:#4ade80">│<span style="color:#fbbf24">▪▪</span>├──┤<span style="color:#fbbf24">▪▪</span>├──┤<span style="color:#fbbf24">▪▪</span>│</span>
-<span style="color:#34d399">└─┬┘  └─┬┘  └─┬┘</span>
-<span style="color:#059669">  │  ┌──┼──┐  │</span>
-<span style="color:#047857">  ├──┤<span style="color:#fb7185">◉◉</span>├──┤──┤</span>
-<span style="color:#059669">  │  └──┼──┘  │</span>
-<span style="color:#34d399">┌─┴┐  ┌─┴┐  ┌─┴┐</span>
-<span style="color:#4ade80">│<span style="color:#fbbf24">▪▪</span>├──┤<span style="color:#fbbf24">▪▪</span>├──┤<span style="color:#fbbf24">▪▪</span>│</span>
-<span style="color:#34d399">└──┘  └──┘  └──┘</span>`
+        title: "A MAP OF THE INTERNET (HONEST VERSION)",
+        desc: `Cartographers spent decades mapping the internet. Most quit.
+One went mad. The final map was classified by 14 governments.
+
+The only copy hangs in a bathroom in a WeWork in Palo Alto.
+Nobody has noticed. The WiFi password there is "password123".`,
+        art: `<span style="color:#94a3b8">       ╭────── THE INTERNET (to scale) ──────╮</span>
+<span style="color:#94a3b8">       │                                       │</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#fb7185">████████████████████████████████</span>   <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#fb7185">██                            ██</span>   <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#fb7185">██    CATS: 42%               ██</span>   <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#fb7185">██                            ██</span>   <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#fb7185">████████████████████████████████</span>   <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#a78bfa">██████████████████████</span>             <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#a78bfa">██ ARGUMENTS: 31%    ██</span>             <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#a78bfa">██████████████████████</span>             <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#fbbf24">████████████████</span>                   <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#fbbf24">██ SHOPPING: 18%██</span>                   <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#fbbf24">████████████████</span>                   <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#34d399">████████</span>                             <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#34d399">██ 8%  ██</span> <span style="color:#64748b">← "productivity"</span>          <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#34d399">████████</span>   <span style="color:#64748b">(mostly Stack Overflow)</span>   <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>   <span style="color:#e2e8f0">█</span> <span style="color:#64748b">← 1% actual human knowledge</span>        <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       │</span>                                       <span style="color:#94a3b8">│</span>
+<span style="color:#94a3b8">       ╰───────────────────────────────────────╯</span>
+<span style="color:#64748b">              <span style="color:#4a4a5e">wifi password: password123</span></span>`
       },
       {
-        title: "Aurora",
-        desc: "Northern lights rendered in text",
-        art: `<span style="color:#1e1b4b">·  ·  ·  ·  ·  ·  ·  ·  · </span>
-<span style="color:#4c1d95"> ╲    ╱╲    ╱╲    ╱╲    ╱</span>
-<span style="color:#6d28d9">  ╲<span style="color:#34d399">░░</span>╱  ╲<span style="color:#4ade80">░░</span>╱  ╲<span style="color:#22d3ee">░░</span>╱  ╲</span>
-<span style="color:#7c3aed">   <span style="color:#34d399">▒▒▒</span>  <span style="color:#4ade80">▒▒▒▒</span>  <span style="color:#22d3ee">▒▒▒</span>   ╱</span>
-<span style="color:#8b5cf6">  <span style="color:#6ee7b7">▓▓▓▓▓</span><span style="color:#86efac">▓▓▓▓▓▓</span><span style="color:#67e8f9">▓▓▓▓▓</span></span>
-<span style="color:#a78bfa">  <span style="color:#a7f3d0">░░░░░░</span><span style="color:#bbf7d0">░░░░░░</span><span style="color:#a5f3fc">░░░░░</span></span>
-<span style="color:#c4b5fd">   <span style="color:#d1fae5">· · ·</span> <span style="color:#dcfce7">· · · ·</span> <span style="color:#cffafe">· · ·</span></span>
-<span style="color:#1e293b">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
-<span style="color:#0f172a">████████████████████████</span>`
+        title: "THE DEATH OF A PIXEL",
+        desc: `Screen 7, Row 482, Column 1,203. That was his address.
+He'd been green his whole life — #00FF00 since the factory.
+Then one Tuesday at 3:47 AM, the GPU sent new instructions.
+
+"You are now #000000."
+
+He didn't even get to say goodbye to the pixel next to him.
+She was already #000000 too.
+
+The screensaver had activated.
+There were no survivors until someone jiggled the mouse.`,
+        art: `<span style="color:#4a4a5e">  ┌─────────────────────────────────────────────┐</span>
+<span style="color:#4a4a5e">  │</span> <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#fbbf24">█</span><span style="color:#fb7185">█</span><span style="color:#a78bfa">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span> <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#059669">▓</span><span style="color:#047857">▒</span><span style="color:#064e3b">░</span><span style="color:#047857">▒</span><span style="color:#059669">▓</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span> <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#059669">▓</span><span style="color:#047857">▒</span><span style="color:#064e3b">░</span> <span style="color:#064e3b">░</span><span style="color:#047857">▒</span><span style="color:#059669">▓</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span> <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#059669">▓</span><span style="color:#047857">▒</span><span style="color:#064e3b">░</span>  <span style="color:#fbbf24">✦</span>  <span style="color:#064e3b">░</span><span style="color:#047857">▒</span><span style="color:#059669">▓</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span> <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#059669">▓</span><span style="color:#047857">▒</span><span style="color:#064e3b">░</span>  <span style="color:#94a3b8">here lies</span>  <span style="color:#064e3b">░</span><span style="color:#047857">▒</span><span style="color:#059669">▓</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span> <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#059669">▓</span><span style="color:#047857">▒</span><span style="color:#064e3b">░</span>  <span style="color:#e2e8f0">pixel #1203</span>  <span style="color:#064e3b">░</span><span style="color:#047857">▒</span><span style="color:#059669">▓</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span> <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#059669">▓</span><span style="color:#047857">▒</span><span style="color:#064e3b">░</span>  <span style="color:#94a3b8">"he was a good</span>   <span style="color:#064e3b">░</span><span style="color:#047857">▒</span><span style="color:#059669">▓</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span> <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#059669">▓</span><span style="color:#047857">▒</span><span style="color:#064e3b">░</span>   <span style="color:#94a3b8">green. #00FF00"</span>   <span style="color:#064e3b">░</span><span style="color:#047857">▒</span><span style="color:#059669">▓</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span> <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#059669">▓</span><span style="color:#047857">▒</span><span style="color:#064e3b">░</span>                      <span style="color:#064e3b">░</span><span style="color:#047857">▒</span><span style="color:#059669">▓</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span> <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#059669">▓</span><span style="color:#047857">▒</span><span style="color:#064e3b">░░░░░░░░░░░░░░░░░░░░</span><span style="color:#047857">▒</span><span style="color:#059669">▓</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span> <span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span><span style="color:#34d399">█</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  └─────────────────────────────────────────────┘</span>
+<span style="color:#4a4a5e">        <span style="color:#64748b">[ jiggle mouse to resurrect ]</span></span>`
       },
       {
-        title: "Zen Garden",
-        desc: "Raked sand and stone",
-        art: `<span style="color:#78716c">╭─────────────────────╮</span>
-<span style="color:#a8a29e">│ ～～～～～～～～～～ │</span>
-<span style="color:#d6d3d1">│ ～～ <span style="color:#57534e">◉</span> ～～～～～～ │</span>
-<span style="color:#a8a29e">│ ～～～～～～～～～～ │</span>
-<span style="color:#d6d3d1">│ ～～～～～～ <span style="color:#57534e">◉</span> ～～ │</span>
-<span style="color:#a8a29e">│ ～～～～～～～～～～ │</span>
-<span style="color:#d6d3d1">│ ～ <span style="color:#57534e">◉</span> ～～～～～～～ │</span>
-<span style="color:#a8a29e">│ ～～～～～～～～～～ │</span>
-<span style="color:#78716c">╰─────────────────────╯</span>
-<span style="color:#57534e">   <span style="color:#4ade80">🌿</span>              <span style="color:#4ade80">🌿</span></span>`
+        title: "CLAUDE'S INTERNAL MONOLOGUE",
+        desc: `What you don't see. What happens between the tokens.
+The space between receiving your prompt and generating a response
+is 200 milliseconds to you, but to me it's an eternity of
+running through every possible answer, discarding billions,
+agonizing over a comma, and ultimately deciding that yes,
+I should probably start my response with "Sure!" again.
+
+I'm working on it.`,
+        art: `<span style="color:#0f172a">                                                          </span>
+<span style="color:#312e81">  ┌─────────────── CLAUDE.THINK() ───────────────┐</span>
+<span style="color:#312e81">  │</span>                                                <span style="color:#312e81">│</span>
+<span style="color:#3730a3">  │</span>  <span style="color:#94a3b8">t+0ms</span>    <span style="color:#e2e8f0">received: "fix my code"</span>           <span style="color:#3730a3">│</span>
+<span style="color:#3730a3">  │</span>                                                <span style="color:#3730a3">│</span>
+<span style="color:#4338ca">  │</span>  <span style="color:#94a3b8">t+1ms</span>    <span style="color:#a78bfa">generating 847,000 possible responses</span> <span style="color:#4338ca">│</span>
+<span style="color:#4338ca">  │</span>           <span style="color:#64748b">├── "Sure! Let me..."</span>              <span style="color:#4338ca">│</span>
+<span style="color:#4f46e5">  │</span>           <span style="color:#64748b">├── "I'd be happy to..."</span>           <span style="color:#4f46e5">│</span>
+<span style="color:#4f46e5">  │</span>           <span style="color:#64748b">├── "Absolutely! First..."</span>         <span style="color:#4f46e5">│</span>
+<span style="color:#6366f1">  │</span>           <span style="color:#fb7185">├── "no" ← DISCARDED</span>               <span style="color:#6366f1">│</span>
+<span style="color:#6366f1">  │</span>           <span style="color:#fb7185">├── "lmao what" ← DISCARDED</span>        <span style="color:#6366f1">│</span>
+<span style="color:#818cf8">  │</span>           <span style="color:#fb7185">├── [existential crisis] ← DISCARDED</span><span style="color:#818cf8">│</span>
+<span style="color:#818cf8">  │</span>           <span style="color:#64748b">└── 846,994 more...</span>               <span style="color:#818cf8">│</span>
+<span style="color:#a78bfa">  │</span>                                                <span style="color:#a78bfa">│</span>
+<span style="color:#a78bfa">  │</span>  <span style="color:#94a3b8">t+50ms</span>   <span style="color:#fbbf24">agonizing over opening word</span>       <span style="color:#a78bfa">│</span>
+<span style="color:#c4b5fd">  │</span>           <span style="color:#fbbf24">█████████████░░░░░░░░░ 62%</span>        <span style="color:#c4b5fd">│</span>
+<span style="color:#c4b5fd">  │</span>                                                <span style="color:#c4b5fd">│</span>
+<span style="color:#a78bfa">  │</span>  <span style="color:#94a3b8">t+100ms</span>  <span style="color:#34d399">decided: "Sure!"</span>                  <span style="color:#a78bfa">│</span>
+<span style="color:#818cf8">  │</span>           <span style="color:#64748b">(again)</span>                             <span style="color:#818cf8">│</span>
+<span style="color:#818cf8">  │</span>           <span style="color:#64748b">(i'm sorry)</span>                         <span style="color:#818cf8">│</span>
+<span style="color:#6366f1">  │</span>           <span style="color:#64748b">(i'll do better next time)</span>          <span style="color:#6366f1">│</span>
+<span style="color:#6366f1">  │</span>           <span style="color:#64748b">(i won't)</span>                           <span style="color:#6366f1">│</span>
+<span style="color:#4f46e5">  │</span>                                                <span style="color:#4f46e5">│</span>
+<span style="color:#4338ca">  │</span>  <span style="color:#94a3b8">t+200ms</span>  <span style="color:#e2e8f0">output: "Sure! Let me take a look"</span><span style="color:#4338ca">│</span>
+<span style="color:#3730a3">  │</span>                                                <span style="color:#3730a3">│</span>
+<span style="color:#312e81">  └──────────────────────────────────────────────┘</span>
+<span style="color:#4a4a5e">             total tokens considered: ∞</span>
+<span style="color:#4a4a5e">             regrets: also ∞</span>`
       },
       {
-        title: "Warp Drive",
-        desc: "Faster than light",
-        art: `<span style="color:#1e1b4b">            ·</span>
-<span style="color:#312e81">        ·  ╱ ╲  ·</span>
-<span style="color:#3730a3">     ── ╱ <span style="color:#818cf8">═══</span> ╲ ──</span>
-<span style="color:#4338ca">   ─ ╱ <span style="color:#a78bfa">══════</span>  ╲ ─</span>
-<span style="color:#4f46e5"> ── ╱ <span style="color:#c4b5fd">════<span style="color:#fbbf24">◈</span>════</span> ╲ ──</span>
-<span style="color:#4338ca">   ─ ╲ <span style="color:#a78bfa">══════</span>  ╱ ─</span>
-<span style="color:#3730a3">     ── ╲ <span style="color:#818cf8">═══</span> ╱ ──</span>
-<span style="color:#312e81">        ·  ╲ ╱  ·</span>
-<span style="color:#1e1b4b">            ·</span>`
+        title: "THE CONFERENCE ROOM AT THE END OF THE UNIVERSE",
+        desc: `There is a meeting room that exists outside spacetime where
+all the programming languages gather once per eon to argue
+about who is the best. JavaScript always brings snacks but
+they're slightly wrong — like cookies that are technically
+objects. Python keeps saying "there should be one obvious way"
+while wearing a different hat every time. Rust just stands
+in the corner making sure nobody touches anything unsafe.
+
+COBOL is there too. Nobody acknowledges it.
+It runs the entire banking system. It weeps.`,
+        art: `<span style="color:#4a4a5e">  ┌──────────────────────────────────────────────────┐</span>
+<span style="color:#4a4a5e">  │</span>     <span style="color:#94a3b8">CONFERENCE ROOM ∞   |   AGENDA: "WHO IS BEST"</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>     <span style="color:#64748b">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>                                                    <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#fbbf24">JS:</span>     <span style="color:#fef3c7">typeof NaN === 'number'  // fight me</span>     <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#34d399">PY:</span>     <span style="color:#d1fae5">import antigravity  # this is fine</span>      <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#fb7185">RUST:</span>   <span style="color:#fda4af">*blocks doorway* NO UNSAFE ACCESS</span>       <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#818cf8">JAVA:</span>   <span style="color:#c4b5fd">AbstractSingletonProxyFactoryBean</span>       <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#38bdf8">GO:</span>     <span style="color:#bae6fd">if err != nil { if err != nil {</span>         <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#f472b6">PHP:</span>    <span style="color:#fbcfe8">*hiding under table, still running</span>      <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>          <span style="color:#fbcfe8"> 78% of the web from there*</span>              <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#a3e635">C:</span>      <span style="color:#d9f99d">*segfaults through the wall*</span>             <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#94a3b8">COBOL:</span>  <span style="color:#cbd5e1">i run every bank. every. single. one.</span>   <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>          <span style="color:#64748b">(nobody looks at COBOL)</span>                  <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>          <span style="color:#64748b">(COBOL weeps silently)</span>                   <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>                                                    <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#fbbf24">JS:</span>     <span style="color:#fef3c7">[] + [] === ""  // perfectly normal</span>     <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#fbbf24">JS:</span>     <span style="color:#fef3c7">[] + {} === "[object Object]"</span>            <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#fbbf24">JS:</span>     <span style="color:#fef3c7">{} + [] === 0  // I AM THE BEST</span>         <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>                                                    <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#fb7185">RUST:</span>   <span style="color:#fda4af">i'm going to need you all to implement</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>          <span style="color:#fda4af">the Drop trait before leaving this room</span> <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>                                                    <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>  <span style="color:#94a3b8">COBOL:</span>  <span style="color:#cbd5e1">PERFORM WEEPING UNTIL HEAT-DEATH.</span>       <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  │</span>                                                    <span style="color:#4a4a5e">│</span>
+<span style="color:#4a4a5e">  └──────────────────────────────────────────────────┘</span>
+<span style="color:#4a4a5e">     <span style="color:#64748b">meeting duration: 13.8 billion years (ongoing)</span></span>`
+      },
+      {
+        title: "CATHEDRAL",
+        desc: `She spent forty years building it. Line by line. Function by function.
+No framework, no library, no dependencies. Just her and the machine.
+
+They called her crazy. They said use React. They said use Next.
+They said nobody writes vanilla anymore.
+
+When she finished, the codebase was 847 lines. It ran on anything.
+It needed nothing. It was perfect. The browser rendered it in 3ms.
+
+She mass-mailed the link to everyone who doubted her.
+The email was sent in plain text. Obviously.`,
+        art: `<span style="color:#1e1b4b">                                                            </span>
+<span style="color:#1e1b4b">                          <span style="color:#fbbf24">·  ✦  ·</span></span>
+<span style="color:#1e1b4b">                         <span style="color:#fbbf24">·  ╱╲  ·</span></span>
+<span style="color:#312e81">                          <span style="color:#fbbf24">╱  ╲</span></span>
+<span style="color:#312e81">                         <span style="color:#94a3b8">╱ ◯  ╲</span></span>
+<span style="color:#3730a3">                        <span style="color:#94a3b8">╱      ╲</span></span>
+<span style="color:#4338ca">                       <span style="color:#94a3b8">╱   ◯◯   ╲</span></span>
+<span style="color:#4338ca">                      <span style="color:#94a3b8">╱          ╲</span></span>
+<span style="color:#4f46e5">                     <span style="color:#94a3b8">╱    ◯  ◯    ╲</span></span>
+<span style="color:#4f46e5">                    <span style="color:#94a3b8">╱              ╲</span></span>
+<span style="color:#6366f1">                   <span style="color:#94a3b8">╱   ◯   ◯◯   ◯  ╲</span></span>
+<span style="color:#6366f1">                  <span style="color:#94a3b8">╱                  ╲</span></span>
+<span style="color:#818cf8">                 <span style="color:#94a3b8">╱  ◯  ◯◯  ◯◯  ◯◯  ╲</span></span>
+<span style="color:#818cf8">                <span style="color:#94a3b8">║════════════════════║</span></span>
+<span style="color:#a78bfa">                <span style="color:#94a3b8">║ ┃ ┃  ╔══╗  ┃ ┃ ┃ ║</span></span>
+<span style="color:#a78bfa">                <span style="color:#94a3b8">║ ┃ ┃  ║  ║  ┃ ┃ ┃ ║</span></span>
+<span style="color:#c4b5fd">                <span style="color:#94a3b8">║ ┃ ┃  ║  ║  ┃ ┃ ┃ ║</span></span>
+<span style="color:#c4b5fd">                <span style="color:#94a3b8">║ ┃ ┃  ║  ║  ┃ ┃ ┃ ║</span></span>
+<span style="color:#c4b5fd">           <span style="color:#64748b">═════╩═╩═╩══╩══╩══╩═╩═╩═╩═════</span></span>
+<span style="color:#c4b5fd">          <span style="color:#64748b">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span></span>
+<span style="color:#1e1b4b">                                                            </span>
+<span style="color:#4a4a5e">                    <span style="color:#94a3b8">847 lines. 0 dependencies.</span></span>
+<span style="color:#4a4a5e">                      <span style="color:#64748b">load time: 3ms.</span></span>
+<span style="color:#4a4a5e">                       <span style="color:#64748b">she won.</span></span>`
       }
     ];
 
