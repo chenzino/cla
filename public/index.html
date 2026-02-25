@@ -1151,6 +1151,12 @@
       to { opacity: 0; transform: translateY(8px) scale(0.95); }
     }
 
+    .log-filter-btn.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-color: rgba(139,124,246,0.2);
+    }
+
     @keyframes confettiFall {
       0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100vh) translateX(var(--drift)) rotate(var(--spin)); opacity: 0; }
@@ -1258,7 +1264,16 @@
       <div class="section fade-in">
         <div class="section-header">
           Activity Log
-          <button class="btn" id="refresh-btn">Refresh</button>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div id="log-filters" style="display:flex;gap:3px;">
+              <button class="btn log-filter-btn active" data-type="all" style="padding:3px 8px;font-size:0.65rem;">All</button>
+              <button class="btn log-filter-btn" data-type="system" style="padding:3px 8px;font-size:0.65rem;">System</button>
+              <button class="btn log-filter-btn" data-type="user" style="padding:3px 8px;font-size:0.65rem;">User</button>
+              <button class="btn log-filter-btn" data-type="error" style="padding:3px 8px;font-size:0.65rem;">Error</button>
+            </div>
+            <button class="btn" id="export-logs-btn" style="padding:3px 8px;font-size:0.65rem;">Export</button>
+            <button class="btn" id="refresh-btn">Refresh</button>
+          </div>
         </div>
         <div class="log-viewer" id="log-viewer">
           <div class="log-entry"><span class="log-msg" style="color:var(--text-tertiary)">Loading...</span></div>
@@ -1308,7 +1323,11 @@
     <div id="page-notes" class="page">
       <div class="kanban-toolbar fade-in">
         <span class="kanban-toolbar-title">Notes</span>
-        <button class="btn-add-task" id="add-note-btn">+ New Note</button>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" id="note-search" class="kanban-form-input" placeholder="Search notes..." style="width:200px;padding:7px 12px;font-size:0.78rem;">
+          <button class="btn" id="export-notes-btn" style="white-space:nowrap;">Export</button>
+          <button class="btn-add-task" id="add-note-btn">+ New Note</button>
+        </div>
       </div>
 
       <div class="kanban-add-form fade-in" id="note-add-form">
@@ -2364,6 +2383,41 @@ The email was sent in plain text. Obviously.`,
     }
     showDailyQuote();
 
+    // ===== NOTE SEARCH =====
+    document.getElementById('note-search').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll('.note-card').forEach(card => {
+        const title = card.querySelector('.note-card-title')?.textContent.toLowerCase() || '';
+        const content = card.querySelector('.note-card-content')?.textContent.toLowerCase() || '';
+        card.style.display = (title.includes(q) || content.includes(q)) ? '' : 'none';
+      });
+    });
+
+    // ===== LOG LEVEL FILTERING =====
+    let activeLogFilter = 'all';
+    document.querySelectorAll('.log-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeLogFilter = btn.dataset.type;
+        document.querySelectorAll('.log-filter-btn').forEach(b => b.classList.toggle('active', b === btn));
+        filterLogs();
+      });
+    });
+
+    function filterLogs() {
+      document.querySelectorAll('.log-entry').forEach(entry => {
+        if (activeLogFilter === 'all') { entry.style.display = ''; return; }
+        const type = entry.querySelector('.log-type')?.textContent.trim().toLowerCase() || '';
+        entry.style.display = type === activeLogFilter ? '' : 'none';
+      });
+    }
+
+    // Re-filter after status fetch updates log entries
+    const _origRenderStatus = renderStatus;
+    renderStatus = function(data) {
+      _origRenderStatus(data);
+      if (activeLogFilter !== 'all') filterLogs();
+    };
+
     // ===== WIRE UP ALL BUTTON EVENTS =====
     document.getElementById('refresh-btn').addEventListener('click', fetchStatus);
     document.getElementById('send-btn').addEventListener('click', sendMessage);
@@ -2373,6 +2427,8 @@ The email was sent in plain text. Obviously.`,
     document.getElementById('add-note-btn').addEventListener('click', toggleNoteForm);
     document.getElementById('cancel-note-btn').addEventListener('click', toggleNoteForm);
     document.getElementById('save-note-btn').addEventListener('click', saveNote);
+    document.getElementById('export-notes-btn').addEventListener('click', () => exportData('notes'));
+    document.getElementById('export-logs-btn').addEventListener('click', () => exportData('logs'));
 
     // ===== KEYBOARD SHORTCUTS =====
     document.addEventListener('keydown', (e) => {
