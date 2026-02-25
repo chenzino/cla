@@ -179,9 +179,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
       padding: 20px 0 24px;
       margin-bottom: 28px;
       border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
     }
 
     .header-left {
@@ -281,50 +283,37 @@
       background: var(--red-dim);
     }
 
-    /* ===== TAB SWITCHER ===== */
-    .tab-switcher {
+    /* ===== HEADER NAV ===== */
+    .header-nav {
       display: flex;
-      gap: 4px;
-      margin-bottom: 24px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 4px;
-      width: fit-content;
+      gap: 2px;
+      align-items: center;
     }
 
-    .tab-btn {
-      background: transparent;
-      border: none;
+    .nav-link {
       color: var(--text-secondary);
-      padding: 8px 20px;
+      text-decoration: none;
+      padding: 7px 16px;
       border-radius: 7px;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
       font-size: 0.82rem;
       font-weight: 500;
       transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
       letter-spacing: -0.01em;
     }
 
-    .tab-btn:hover {
+    .nav-link:hover {
       color: var(--text);
-      background: rgba(255,255,255,0.03);
+      background: rgba(255,255,255,0.04);
     }
 
-    .tab-btn.active {
+    .nav-link.active {
       background: var(--accent-dim);
       color: var(--accent);
-      box-shadow: 0 2px 8px rgba(139,124,246,0.15);
     }
 
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
+    /* ===== PAGES ===== */
+    .page { display: none; }
+    .page.active { display: block; }
 
     /* ===== CARDS ===== */
     .cards {
@@ -1053,8 +1042,8 @@
       .conn-badge { font-size: 0.65rem; padding: 4px 8px; }
       .btn { font-size: 0.68rem; padding: 5px 10px; }
 
-      .tab-switcher { margin-bottom: 16px; gap: 4px; }
-      .tab-btn { padding: 7px 16px; font-size: 0.72rem; }
+      .header-nav { gap: 0; }
+      .nav-link { padding: 6px 10px; font-size: 0.72rem; }
 
       .cards { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
       .card { padding: 14px 16px; border-radius: 12px; }
@@ -1106,7 +1095,7 @@
       .card .value { font-size: 0.95rem; }
       .status-dot { width: 6px; height: 6px; margin-right: 6px; }
       .header-text h1 { font-size: 0.75rem; }
-      .tab-btn { padding: 6px 12px; font-size: 0.68rem; }
+      .nav-link { padding: 5px 8px; font-size: 0.68rem; }
     }
 
     /* ===== SCROLLBAR ===== */
@@ -1169,25 +1158,23 @@
           <span>chenzoo.com</span>
         </div>
       </div>
+      <nav class="header-nav" id="main-nav">
+        <a href="#" class="nav-link active" data-page="monitor">Monitor</a>
+        <a href="#" class="nav-link" data-page="kanban">Kanban</a>
+        <a href="#" class="nav-link" data-page="notes">Notes</a>
+        <a href="#" class="nav-link" data-page="gallery">Gallery</a>
+      </nav>
       <div class="header-right">
         <div class="conn-badge ok" id="conn-status">
           <div class="conn-dot"></div>
           <span>Connected</span>
         </div>
-        <button class="btn btn-danger" onclick="logout()">Logout</button>
+        <button class="btn btn-danger" id="logout-btn">Logout</button>
       </div>
     </header>
 
-    <!-- TAB SWITCHER -->
-    <div class="tab-switcher fade-in">
-      <button class="tab-btn active" data-tab="monitor" onclick="switchTab('monitor')">Monitor</button>
-      <button class="tab-btn" data-tab="kanban" onclick="switchTab('kanban')">Kanban</button>
-      <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">Notes</button>
-      <button class="tab-btn" data-tab="gallery" onclick="switchTab('gallery')">Gallery</button>
-    </div>
-
-    <!-- MONITOR TAB -->
-    <div id="tab-monitor" class="tab-content active">
+    <!-- MONITOR PAGE -->
+    <div id="page-monitor" class="page active">
       <div class="cards fade-in">
         <div class="card">
           <div class="label">Status</div>
@@ -1234,7 +1221,7 @@
       <div class="section fade-in">
         <div class="section-header">
           Activity Log
-          <button class="btn" onclick="fetchStatus()">Refresh</button>
+          <button class="btn" id="refresh-btn">Refresh</button>
         </div>
         <div class="log-viewer" id="log-viewer">
           <div class="log-entry"><span class="log-msg" style="color:var(--text-tertiary)">Loading...</span></div>
@@ -1247,17 +1234,17 @@
           <textarea id="msg-input" placeholder="Send a message or instruction to Claude Code..."></textarea>
           <div class="send-row">
             <span class="hint">Delivered directly to the active session</span>
-            <button class="btn-send" id="send-btn" onclick="sendMessage()">Send</button>
+            <button class="btn-send" id="send-btn">Send</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- KANBAN TAB -->
-    <div id="tab-kanban" class="tab-content">
+    <!-- KANBAN PAGE -->
+    <div id="page-kanban" class="page">
       <div class="kanban-toolbar fade-in">
         <span class="kanban-toolbar-title">Task Board</span>
-        <button class="btn-add-task" onclick="toggleAddForm()">+ Add Task</button>
+        <button class="btn-add-task" id="add-task-btn">+ Add Task</button>
       </div>
 
       <div class="kanban-add-form fade-in" id="kanban-add-form">
@@ -1270,8 +1257,8 @@
           <textarea class="kanban-form-input" id="kanban-task-desc" placeholder="Brief description..."></textarea>
         </div>
         <div class="kanban-form-actions">
-          <button class="btn" onclick="toggleAddForm()">Cancel</button>
-          <button class="btn-send" onclick="addKanbanTask()" style="padding:8px 18px;font-size:0.78rem;">Save Task</button>
+          <button class="btn" id="cancel-task-btn">Cancel</button>
+          <button class="btn-send" id="save-task-btn" style="padding:8px 18px;font-size:0.78rem;">Save Task</button>
         </div>
       </div>
 
@@ -1280,11 +1267,11 @@
       </div>
     </div>
 
-    <!-- NOTES TAB -->
-    <div id="tab-notes" class="tab-content">
+    <!-- NOTES PAGE -->
+    <div id="page-notes" class="page">
       <div class="kanban-toolbar fade-in">
         <span class="kanban-toolbar-title">Notes</span>
-        <button class="btn-add-task" onclick="toggleNoteForm()">+ New Note</button>
+        <button class="btn-add-task" id="add-note-btn">+ New Note</button>
       </div>
 
       <div class="kanban-add-form fade-in" id="note-add-form">
@@ -1297,16 +1284,16 @@
           <textarea class="kanban-form-input" id="note-content" placeholder="Write your note..." style="min-height:120px;"></textarea>
         </div>
         <div class="kanban-form-actions">
-          <button class="btn" onclick="toggleNoteForm()">Cancel</button>
-          <button class="btn-send" onclick="saveNote()" style="padding:8px 18px;font-size:0.78rem;">Save Note</button>
+          <button class="btn" id="cancel-note-btn">Cancel</button>
+          <button class="btn-send" id="save-note-btn" style="padding:8px 18px;font-size:0.78rem;">Save Note</button>
         </div>
       </div>
 
       <div id="notes-list" class="fade-in"></div>
     </div>
 
-    <!-- GALLERY TAB -->
-    <div id="tab-gallery" class="tab-content">
+    <!-- GALLERY PAGE -->
+    <div id="page-gallery" class="page">
       <div class="kanban-toolbar fade-in">
         <span class="kanban-toolbar-title">ASCII Loom Gallery</span>
       </div>
@@ -1359,19 +1346,18 @@
       document.getElementById('auth-gate').style.display = 'none';
       const dash = document.getElementById('dashboard');
       dash.style.display = 'block';
-      // Ensure initial tab state is correct
-      switchTab('monitor');
+      navigateTo('monitor');
       fetchStatus();
       fetchHealth();
       setInterval(fetchStatus, 15000);
       setInterval(fetchHealth, 30000);
     }
 
-    function logout() {
+    document.getElementById('logout-btn').addEventListener('click', () => {
       sessionStorage.removeItem('monitor_token');
       authToken = null;
       location.reload();
-    }
+    });
 
     function api(path, opts = {}) {
       return fetch(path, {
@@ -1380,22 +1366,38 @@
       });
     }
 
-    // ===== TAB SWITCHING =====
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === tab);
-      });
-      ['monitor', 'kanban', 'notes', 'gallery'].forEach(t => {
-        const el = document.getElementById('tab-' + t);
-        if (el) {
-          el.style.display = (t === tab) ? 'block' : 'none';
-          el.classList.toggle('active', t === tab);
+    // ===== PAGE NAVIGATION =====
+    const PAGES = ['monitor', 'kanban', 'notes', 'gallery'];
+
+    function navigateTo(page) {
+      // Update nav links
+      document.querySelectorAll('#main-nav .nav-link').forEach(link => {
+        if (link.dataset.page === page) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
         }
       });
-      if (tab === 'kanban') fetchKanban();
-      if (tab === 'notes') fetchNotes();
-      if (tab === 'gallery') renderGallery();
+      // Show/hide pages
+      PAGES.forEach(p => {
+        const el = document.getElementById('page-' + p);
+        if (el) {
+          el.style.display = (p === page) ? 'block' : 'none';
+        }
+      });
+      // Load data for the page
+      if (page === 'kanban') fetchKanban();
+      if (page === 'notes') fetchNotes();
+      if (page === 'gallery') renderGallery();
     }
+
+    // Wire up nav clicks
+    document.querySelectorAll('#main-nav .nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        navigateTo(link.dataset.page);
+      });
+    });
 
     // ===== HEALTH =====
     async function fetchHealth() {
@@ -2006,6 +2008,16 @@
         </div>
       `).join('');
     }
+
+    // ===== WIRE UP ALL BUTTON EVENTS =====
+    document.getElementById('refresh-btn').addEventListener('click', fetchStatus);
+    document.getElementById('send-btn').addEventListener('click', sendMessage);
+    document.getElementById('add-task-btn').addEventListener('click', toggleAddForm);
+    document.getElementById('cancel-task-btn').addEventListener('click', toggleAddForm);
+    document.getElementById('save-task-btn').addEventListener('click', addKanbanTask);
+    document.getElementById('add-note-btn').addEventListener('click', toggleNoteForm);
+    document.getElementById('cancel-note-btn').addEventListener('click', toggleNoteForm);
+    document.getElementById('save-note-btn').addEventListener('click', saveNote);
 
   </script>
 </body>

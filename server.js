@@ -52,6 +52,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:"],
@@ -61,19 +62,27 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 
-// Rate limit on login - 5 attempts per 15 minutes per IP
+// Trust Cloudflare proxy headers for real client IP
+app.set('trust proxy', true);
+
+// Use real client IP from Cloudflare, fall back to X-Forwarded-For, then socket IP
+const getClientIp = (req) => req.headers['cf-connecting-ip'] || req.ip;
+
+// Rate limit on login - 15 attempts per 15 minutes per real IP
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 15,
+  keyGenerator: getClientIp,
   message: { ok: false, error: 'Too many login attempts. Try again in 15 minutes.' },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-// General API rate limit - 100 requests per minute
+// General API rate limit - 200 requests per minute per real IP
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 100,
+  max: 200,
+  keyGenerator: getClientIp,
   standardHeaders: true,
   legacyHeaders: false,
 });
