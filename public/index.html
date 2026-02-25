@@ -2158,6 +2158,103 @@
       z-index: 350;
       pointer-events: none;
     }
+
+    /* ===== AMBIENT SOUND ===== */
+    .ambient-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      height: 32px;
+    }
+    .ambient-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 0;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+    }
+    .ambient-btn:hover { color: var(--text); }
+    .ambient-btn.playing { color: var(--green); }
+    .ambient-viz {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 16px;
+    }
+    .ambient-viz-bar {
+      width: 3px;
+      background: var(--accent);
+      border-radius: 1px;
+      transition: height 0.1s;
+      opacity: 0.6;
+    }
+    .ambient-volume {
+      width: 50px;
+      height: 3px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+    .ambient-volume::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+
+    /* ===== WEATHER WIDGET ===== */
+    .weather-widget {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .weather-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+    .weather-temp {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ===== NOTE PINNED ===== */
+    .note-card.pinned {
+      border-color: rgba(139,124,246,0.25);
+      background: linear-gradient(135deg, rgba(139,124,246,0.04) 0%, var(--surface) 100%);
+    }
+    .note-card.pinned::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), #6366f1);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .pin-badge {
+      font-size: 0.62rem;
+      color: var(--accent);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
   </style>
 </head>
 <body>
@@ -2199,6 +2296,15 @@
         <div class="conn-badge ok" id="conn-status">
           <div class="conn-dot"></div>
           <span>Connected</span>
+        </div>
+        <div class="weather-widget" id="weather-widget" title="Local weather">
+          <span class="weather-icon" id="weather-icon">--</span>
+          <span class="weather-temp" id="weather-temp">--</span>
+        </div>
+        <div class="ambient-bar" id="ambient-bar">
+          <button class="ambient-btn" id="ambient-toggle" title="Toggle ambient sound">&#9835;</button>
+          <div class="ambient-viz" id="ambient-viz"></div>
+          <input type="range" class="ambient-volume" id="ambient-volume" min="0" max="100" value="30">
         </div>
         <button class="theme-toggle" id="theme-toggle" title="Toggle theme">&#9790;</button>
         <button class="crt-toggle" id="crt-toggle" title="CRT Mode">CRT</button>
@@ -5114,6 +5220,200 @@ The email was sent in plain text. Obviously.`,
         }
         lastDoneCount = done;
       }
+    };
+
+    // ===== AMBIENT SOUND GENERATOR =====
+    let ambientCtx = null;
+    let ambientPlaying = false;
+    let ambientOsc = [];
+    let ambientGain = null;
+    let ambientAnalyser = null;
+    const ambientViz = document.getElementById('ambient-viz');
+
+    // Create viz bars
+    for (let i = 0; i < 8; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'ambient-viz-bar';
+      bar.style.height = '2px';
+      ambientViz.appendChild(bar);
+    }
+
+    function startAmbient() {
+      if (!ambientCtx) {
+        ambientCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (ambientCtx.state === 'suspended') ambientCtx.resume();
+
+      ambientGain = ambientCtx.createGain();
+      ambientGain.gain.value = (parseInt(document.getElementById('ambient-volume').value) || 30) / 300;
+      ambientAnalyser = ambientCtx.createAnalyser();
+      ambientAnalyser.fftSize = 32;
+
+      // Create layered ambient tones
+      const freqs = [55, 82.5, 110, 165, 220];
+      const types = ['sine', 'sine', 'triangle', 'sine', 'sine'];
+      ambientOsc = freqs.map((freq, i) => {
+        const osc = ambientCtx.createOscillator();
+        const oscGain = ambientCtx.createGain();
+        osc.type = types[i];
+        osc.frequency.value = freq;
+        oscGain.gain.value = 0.08 - (i * 0.012);
+
+        // Slow modulation
+        const lfo = ambientCtx.createOscillator();
+        const lfoGain = ambientCtx.createGain();
+        lfo.frequency.value = 0.05 + i * 0.02;
+        lfoGain.gain.value = freq * 0.005;
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc.frequency);
+        lfo.start();
+
+        osc.connect(oscGain);
+        oscGain.connect(ambientGain);
+        osc.start();
+        return { osc, lfo, oscGain };
+      });
+
+      ambientGain.connect(ambientAnalyser);
+      ambientAnalyser.connect(ambientCtx.destination);
+      ambientPlaying = true;
+      document.getElementById('ambient-toggle').classList.add('playing');
+      animateAmbientViz();
+    }
+
+    function stopAmbient() {
+      ambientOsc.forEach(o => {
+        try { o.osc.stop(); o.lfo.stop(); } catch {}
+      });
+      ambientOsc = [];
+      ambientPlaying = false;
+      document.getElementById('ambient-toggle').classList.remove('playing');
+      ambientViz.querySelectorAll('.ambient-viz-bar').forEach(bar => bar.style.height = '2px');
+    }
+
+    function animateAmbientViz() {
+      if (!ambientPlaying || !ambientAnalyser) return;
+      const data = new Uint8Array(ambientAnalyser.frequencyBinCount);
+      ambientAnalyser.getByteFrequencyData(data);
+      const bars = ambientViz.querySelectorAll('.ambient-viz-bar');
+      bars.forEach((bar, i) => {
+        const val = data[i] || 0;
+        bar.style.height = Math.max(2, (val / 255) * 16) + 'px';
+      });
+      requestAnimationFrame(animateAmbientViz);
+    }
+
+    document.getElementById('ambient-toggle').addEventListener('click', () => {
+      if (ambientPlaying) stopAmbient();
+      else startAmbient();
+    });
+
+    document.getElementById('ambient-volume').addEventListener('input', (e) => {
+      if (ambientGain) {
+        ambientGain.gain.value = parseInt(e.target.value) / 300;
+      }
+    });
+
+    // ===== WEATHER WIDGET =====
+    async function fetchWeather() {
+      try {
+        const resp = await api('/api/weather');
+        if (!resp.ok) return;
+        const w = await resp.json();
+        const icon = getWeatherIcon(parseInt(w.code) || 0);
+        document.getElementById('weather-icon').textContent = icon;
+        document.getElementById('weather-temp').textContent = w.temp_F + 'F';
+        document.getElementById('weather-widget').title = w.desc + ' | ' + w.temp_C + 'C / ' + w.temp_F + 'F | Humidity: ' + w.humidity + '%';
+      } catch {}
+    }
+
+    function getWeatherIcon(code) {
+      if (code >= 200 && code < 300) return '\u26C8'; // thunderstorm
+      if (code >= 300 && code < 400) return '\u{1F327}'; // drizzle
+      if (code === 113) return '\u2600'; // sunny
+      if (code === 116) return '\u26C5'; // partly cloudy
+      if (code === 119 || code === 122) return '\u2601'; // cloudy
+      if (code >= 176 && code <= 200) return '\u{1F327}'; // rain
+      if (code >= 227 && code <= 338) return '\u2744'; // snow/sleet
+      if (code >= 389) return '\u26C8'; // thunderstorm
+      return '\u2601'; // default cloud
+    }
+
+    if (authToken) {
+      setTimeout(fetchWeather, 2000);
+      setInterval(fetchWeather, 600000); // every 10 min
+    }
+
+    // ===== NOTE PINNING + BASIC MARKDOWN =====
+    let pinnedNotes = JSON.parse(localStorage.getItem('pinned_notes') || '[]');
+
+    function togglePinNote(noteId) {
+      const idx = pinnedNotes.indexOf(noteId);
+      if (idx >= 0) {
+        pinnedNotes.splice(idx, 1);
+        toast('Note unpinned');
+      } else {
+        pinnedNotes.push(noteId);
+        toast('Note pinned');
+      }
+      localStorage.setItem('pinned_notes', JSON.stringify(pinnedNotes));
+      fetchNotes();
+    }
+
+    function renderMarkdown(text) {
+      if (!text) return '';
+      // Basic markdown: bold, italic, code, headers, links
+      let html = esc(text);
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+      html = html.replace(/`(.+?)`/g, '<code style="background:rgba(139,124,246,0.1);padding:1px 4px;border-radius:3px;font-family:JetBrains Mono,monospace;font-size:0.82em;">$1</code>');
+      html = html.replace(/^### (.+)$/gm, '<div style="font-weight:600;font-size:0.88rem;color:var(--text);margin:6px 0 3px;">$1</div>');
+      html = html.replace(/^## (.+)$/gm, '<div style="font-weight:600;font-size:0.95rem;color:var(--text);margin:8px 0 4px;">$1</div>');
+      html = html.replace(/^# (.+)$/gm, '<div style="font-weight:700;font-size:1.05rem;color:var(--text);margin:10px 0 5px;">$1</div>');
+      return html;
+    }
+
+    // Override renderNotes to include pin functionality and markdown
+    const _origFetchNotes = fetchNotes;
+    fetchNotes = async function() {
+      try {
+        const resp = await api('/api/notes');
+        if (resp.status === 401) return;
+        const notes = await resp.json();
+
+        // Sort: pinned first, then by date
+        const sorted = [...notes].sort((a, b) => {
+          const aPinned = pinnedNotes.includes(a.id);
+          const bPinned = pinnedNotes.includes(b.id);
+          if (aPinned && !bPinned) return -1;
+          if (!aPinned && bPinned) return 1;
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+
+        const list = document.getElementById('notes-list');
+        if (sorted.length === 0) {
+          list.innerHTML = '<div class="note-empty">No notes yet. Create one to get started.</div>';
+          return;
+        }
+        list.innerHTML = sorted.map(note => {
+          const isPinned = pinnedNotes.includes(note.id);
+          const dateStr = new Date(note.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' });
+          return '<div class="note-card ' + (isPinned ? 'pinned' : '') + '" id="note-' + note.id + '">' +
+            '<div class="note-card-header">' +
+            '  <div style="display:flex;align-items:center;gap:8px;">' +
+            (isPinned ? '<span class="pin-badge">Pinned</span>' : '') +
+            '  <span class="note-card-title">' + esc(note.title) + '</span></div>' +
+            '  <span class="note-card-date">' + dateStr + '</span>' +
+            '</div>' +
+            '<div class="note-card-content">' + renderMarkdown(note.content) + '</div>' +
+            '<textarea class="note-edit-area" id="note-edit-' + note.id + '">' + esc(note.content) + '</textarea>' +
+            '<div class="note-card-actions">' +
+            '  <button class="btn" onclick="togglePinNote(\'' + note.id + '\')">' + (isPinned ? 'Unpin' : 'Pin') + '</button>' +
+            '  <button class="btn" onclick="editNote(\'' + note.id + '\')">Edit</button>' +
+            '  <button class="btn btn-danger" onclick="deleteNote(\'' + note.id + '\')">Delete</button>' +
+            '</div></div>';
+        }).join('');
+      } catch {}
     };
 
   </script>

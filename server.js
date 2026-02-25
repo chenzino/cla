@@ -306,6 +306,34 @@ app.get('/api/export/:type', auth, (req, res) => {
   } catch { res.status(500).json({ error: 'export failed' }); }
 });
 
+// ===== WEATHER PROXY =====
+app.get('/api/weather', auth, async (req, res) => {
+  try {
+    const https = require('https');
+    const url = 'https://wttr.in/?format=j1';
+    const data = await new Promise((resolve, reject) => {
+      https.get(url, { headers: { 'User-Agent': 'curl/7.68.0' }, timeout: 5000 }, (resp) => {
+        let body = '';
+        resp.on('data', chunk => body += chunk);
+        resp.on('end', () => {
+          try { resolve(JSON.parse(body)); } catch { reject(new Error('parse error')); }
+        });
+      }).on('error', reject);
+    });
+    const current = data.current_condition?.[0] || {};
+    res.json({
+      temp_C: current.temp_C,
+      temp_F: current.temp_F,
+      desc: current.weatherDesc?.[0]?.value || '',
+      humidity: current.humidity,
+      windSpeed: current.windspeedKmph,
+      code: current.weatherCode,
+    });
+  } catch {
+    res.status(500).json({ error: 'weather fetch failed' });
+  }
+});
+
 // ===== KANBAN =====
 app.get('/api/kanban', auth, (req, res) => {
   try { res.json(readJSON(KANBAN_FILE)); }
