@@ -312,8 +312,25 @@
     }
 
     /* ===== PAGES ===== */
-    .page { display: none; }
-    .page.active { display: block; }
+    .page { display: none; opacity: 0; transition: opacity 0.25s ease; }
+    .page.active { display: block; opacity: 1; }
+    .page.fade-enter { opacity: 0; transform: translateY(8px); }
+    .page.fade-active { opacity: 1; transform: translateY(0); transition: opacity 0.3s ease, transform 0.3s ease; }
+
+    /* ===== LIVE CLOCK ===== */
+    .header-clock {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.5px;
+      text-align: right;
+      line-height: 1.4;
+    }
+    .header-clock .clock-time {
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
 
     /* ===== CARDS ===== */
     .cards {
@@ -1165,6 +1182,10 @@
         <a href="#" class="nav-link" data-page="gallery">Gallery</a>
       </nav>
       <div class="header-right">
+        <div class="header-clock" id="header-clock">
+          <div class="clock-time">--:--:--</div>
+          <div>up --:--</div>
+        </div>
         <div class="conn-badge ok" id="conn-status">
           <div class="conn-dot"></div>
           <span>Connected</span>
@@ -1191,6 +1212,17 @@
         <div class="card">
           <div class="label">Last Sync</div>
           <div class="value dim" id="card-updated">--</div>
+        </div>
+      </div>
+
+      <!-- DAILY QUOTE -->
+      <div class="section fade-in" id="quote-section" style="padding:16px 22px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <span style="font-size:1.5rem;color:var(--accent);line-height:1;opacity:0.5;">"</span>
+          <div>
+            <div id="daily-quote" style="font-size:0.84rem;color:var(--text-secondary);line-height:1.6;font-style:italic;">Loading wisdom...</div>
+            <div id="quote-author" style="font-size:0.72rem;color:var(--text-tertiary);margin-top:6px;">—</div>
+          </div>
         </div>
       </div>
 
@@ -1368,8 +1400,10 @@
 
     // ===== PAGE NAVIGATION =====
     const PAGES = ['monitor', 'kanban', 'notes', 'gallery'];
+    let currentPage = 'monitor';
 
     function navigateTo(page) {
+      if (page === currentPage && document.getElementById('page-' + page).style.display === 'block') return;
       // Update nav links
       document.querySelectorAll('#main-nav .nav-link').forEach(link => {
         if (link.dataset.page === page) {
@@ -1378,13 +1412,28 @@
           link.classList.remove('active');
         }
       });
-      // Show/hide pages
+      // Hide old page, show new with animation
       PAGES.forEach(p => {
         const el = document.getElementById('page-' + p);
-        if (el) {
-          el.style.display = (p === page) ? 'block' : 'none';
+        if (!el) return;
+        if (p === page) {
+          el.style.display = 'block';
+          el.classList.remove('fade-enter');
+          // Trigger reflow for animation
+          void el.offsetWidth;
+          el.classList.add('fade-enter');
+          requestAnimationFrame(() => {
+            el.classList.remove('fade-enter');
+            el.classList.add('fade-active');
+            el.style.opacity = '1';
+          });
+        } else {
+          el.style.display = 'none';
+          el.style.opacity = '0';
+          el.classList.remove('fade-active');
         }
       });
+      currentPage = page;
       // Load data for the page
       if (page === 'kanban') fetchKanban();
       if (page === 'notes') fetchNotes();
@@ -1398,6 +1447,24 @@
         navigateTo(link.dataset.page);
       });
     });
+
+    // ===== LIVE CLOCK =====
+    const sessionStart = Date.now();
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const elapsed = Date.now() - sessionStart;
+      const h = Math.floor(elapsed / 3600000);
+      const m = Math.floor((elapsed % 3600000) / 60000);
+      const s = Math.floor((elapsed % 60000) / 1000);
+      const uptime = h > 0 ? h + 'h ' + m + 'm' : m + 'm ' + s + 's';
+      const el = document.getElementById('header-clock');
+      if (el) {
+        el.innerHTML = '<div class="clock-time">' + time + '</div><div>up ' + uptime + '</div>';
+      }
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
 
     // ===== HEALTH =====
     async function fetchHealth() {
@@ -2248,6 +2315,49 @@ The email was sent in plain text. Obviously.`,
         </div>
       `).join('');
     }
+
+    // ===== DAILY QUOTE =====
+    const devQuotes = [
+      { q: "First, solve the problem. Then, write the code.", a: "John Johnson" },
+      { q: "The best error message is the one that never shows up.", a: "Thomas Fuchs" },
+      { q: "Code is like humor. When you have to explain it, it's bad.", a: "Cory House" },
+      { q: "Make it work, make it right, make it fast.", a: "Kent Beck" },
+      { q: "Simplicity is the soul of efficiency.", a: "Austin Freeman" },
+      { q: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.", a: "Martin Fowler" },
+      { q: "Programming isn't about what you know; it's about what you can figure out.", a: "Chris Pine" },
+      { q: "The most dangerous phrase in the language is 'we've always done it this way.'", a: "Grace Hopper" },
+      { q: "It works on my machine.", a: "Every developer ever" },
+      { q: "There are only two hard things in Computer Science: cache invalidation and naming things.", a: "Phil Karlton" },
+      { q: "Deleted code is debugged code.", a: "Jeff Sickel" },
+      { q: "The function of good software is to make the complex appear to be simple.", a: "Grady Booch" },
+      { q: "Walking on water and developing software from a specification are easy if both are frozen.", a: "Edward V. Berard" },
+      { q: "If debugging is the process of removing bugs, then programming must be the process of putting them in.", a: "Edsger Dijkstra" },
+      { q: "Software and cathedrals are much the same — first we build them, then we pray.", a: "Sam Redwine" },
+      { q: "The only way to go fast, is to go well.", a: "Robert C. Martin" },
+      { q: "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away.", a: "Antoine de Saint-Exupery" },
+      { q: "A ship in port is safe, but that's not what ships are built for.", a: "Grace Hopper" },
+      { q: "Talk is cheap. Show me the code.", a: "Linus Torvalds" },
+      { q: "Programs must be written for people to read, and only incidentally for machines to execute.", a: "Harold Abelson" },
+      { q: "The computer was born to solve problems that did not exist before.", a: "Bill Gates" },
+      { q: "In theory, theory and practice are the same. In practice, they're not.", a: "Yogi Berra" },
+      { q: "Measuring programming progress by lines of code is like measuring aircraft building progress by weight.", a: "Bill Gates" },
+      { q: "Sometimes the elegant implementation is just a function. Not a method. Not a class. Not a framework. Just a function.", a: "John Carmack" },
+      { q: "One of my most productive days was throwing away 1,000 lines of code.", a: "Ken Thompson" },
+      { q: "The best time to plant a tree was 20 years ago. The second best time is now.", a: "Chinese Proverb" },
+      { q: "Done is better than perfect.", a: "Sheryl Sandberg" },
+      { q: "Weeks of coding can save you hours of planning.", a: "Unknown" },
+      { q: "It's not a bug — it's an undocumented feature.", a: "Anonymous" },
+      { q: "I'm not a great programmer; I'm just a good programmer with great habits.", a: "Kent Beck" },
+    ];
+    function showDailyQuote() {
+      const day = Math.floor(Date.now() / 86400000);
+      const quote = devQuotes[day % devQuotes.length];
+      const qEl = document.getElementById('daily-quote');
+      const aEl = document.getElementById('quote-author');
+      if (qEl) qEl.textContent = quote.q;
+      if (aEl) aEl.textContent = '— ' + quote.a;
+    }
+    showDailyQuote();
 
     // ===== WIRE UP ALL BUTTON EVENTS =====
     document.getElementById('refresh-btn').addEventListener('click', fetchStatus);
