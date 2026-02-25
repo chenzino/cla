@@ -1104,6 +1104,280 @@
       .tab-btn { padding: 6px 12px; font-size: 0.68rem; }
     }
 
+    /* ===== GUIDE STYLES ===== */
+    .guide-content {
+      padding-bottom: 24px;
+    }
+
+    .guide-hero {
+      background: linear-gradient(135deg, rgba(139,124,246,0.08) 0%, rgba(99,102,241,0.04) 50%, rgba(52,211,153,0.06) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px 36px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .guide-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(139,124,246,0.2), transparent);
+    }
+
+    .guide-hero h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .guide-hero p {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      line-height: 1.7;
+      max-width: 640px;
+    }
+
+    .guide-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      position: relative;
+    }
+
+    .guide-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    }
+
+    .guide-section-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .guide-section-header:hover {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .guide-section-header .section-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .guide-section-header .section-icon.purple { background: var(--accent-dim); color: var(--accent); }
+    .guide-section-header .section-icon.green { background: var(--green-dim); color: var(--green); }
+    .guide-section-header .section-icon.yellow { background: var(--yellow-dim); color: var(--yellow); }
+    .guide-section-header .section-icon.red { background: var(--red-dim); color: var(--red); }
+
+    .guide-section-header h3 {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      flex: 1;
+    }
+
+    .guide-section-header .chevron {
+      color: var(--text-tertiary);
+      font-size: 0.7rem;
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .guide-section.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .guide-section-body {
+      padding: 0 24px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.3s;
+    }
+
+    .guide-section.open .guide-section-body {
+      padding: 20px 24px;
+      max-height: 4000px;
+    }
+
+    .guide-section-body p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+
+    .guide-section-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .guide-section-body h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 18px 0 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .guide-section-body h4:first-child {
+      margin-top: 0;
+    }
+
+    .guide-section-body ul,
+    .guide-section-body ol {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.75;
+      margin: 0 0 14px 20px;
+    }
+
+    .guide-section-body li {
+      margin-bottom: 6px;
+    }
+
+    .guide-section-body li::marker {
+      color: var(--accent);
+    }
+
+    .code-block {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin: 12px 0 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .code-block .comment { color: var(--text-tertiary); }
+    .code-block .keyword { color: var(--accent); }
+    .code-block .string { color: var(--green); }
+    .code-block .fn { color: var(--yellow); }
+
+    .guide-tip {
+      background: rgba(139,124,246,0.06);
+      border: 1px solid rgba(139,124,246,0.12);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      display: flex;
+      gap: 10px;
+    }
+
+    .guide-tip .tip-icon {
+      color: var(--accent);
+      flex-shrink: 0;
+      font-size: 0.9rem;
+      margin-top: 1px;
+    }
+
+    .guide-warning {
+      background: rgba(251,191,36,0.05);
+      border: 1px solid rgba(251,191,36,0.12);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      display: flex;
+      gap: 10px;
+    }
+
+    .guide-warning .tip-icon {
+      color: var(--yellow);
+      flex-shrink: 0;
+      font-size: 0.9rem;
+      margin-top: 1px;
+    }
+
+    .arch-diagram {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 24px;
+      margin: 16px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      line-height: 1.9;
+      color: var(--text-secondary);
+      text-align: center;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .arch-diagram .highlight { color: var(--accent); font-weight: 600; }
+    .arch-diagram .green { color: var(--green); }
+    .arch-diagram .yellow { color: var(--yellow); }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 14px 0;
+    }
+
+    @media (max-width: 600px) {
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+    }
+
+    .feature-card h5 {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .feature-card p {
+      font-size: 0.78rem;
+      margin-bottom: 0 !important;
+    }
+
     /* ===== SCROLLBAR ===== */
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -1179,6 +1453,7 @@
       <button class="tab-btn" data-tab="kanban" onclick="switchTab('kanban')">Kanban</button>
       <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">Notes</button>
       <button class="tab-btn" data-tab="gallery" onclick="switchTab('gallery')">Gallery</button>
+      <button class="tab-btn" data-tab="guide" onclick="switchTab('guide')">Agentic Workflows</button>
     </div>
 
     <!-- MONITOR TAB -->
@@ -1306,6 +1581,493 @@
         <span class="kanban-toolbar-title">ASCII Loom Gallery</span>
       </div>
       <div class="gallery-grid fade-in" id="gallery-grid"></div>
+    </div>
+
+    <!-- AGENTIC WORKFLOWS GUIDE TAB -->
+    <div id="tab-guide" class="tab-content">
+      <div class="guide-content">
+
+        <!-- HERO -->
+        <div class="guide-hero fade-in">
+          <h2>Agentic Coding Workflows</h2>
+          <p>A comprehensive guide to setting up hierarchical multi-agent workflows in Claude Code. Learn how to orchestrate specialized subagents, parallelize work, and build production-grade agentic systems that scale across complex codebases.</p>
+        </div>
+
+        <!-- SECTION 1: Architecture Overview -->
+        <div class="guide-section open fade-in">
+          <div class="guide-section-header" onclick="toggleGuideSection(this)">
+            <div class="section-icon purple">&#9670;</div>
+            <h3>Architecture Overview</h3>
+            <span class="chevron">&#9660;</span>
+          </div>
+          <div class="guide-section-body">
+            <p>Claude Code uses a <strong style="color:var(--text)">hierarchical agent architecture</strong> where a main orchestrator agent delegates specialized tasks to independent subagents. Each subagent runs in its own context window, receives focused instructions, and reports results back to the parent.</p>
+
+            <div class="arch-diagram"><span class="highlight">&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;</span>
+<span class="highlight">&#9474;       Main Orchestrator Agent     &#9474;</span>
+<span class="highlight">&#9474;   (plans, delegates, reconciles)   &#9474;</span>
+<span class="highlight">&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</span>
+        <span class="highlight">&#9474;</span>         <span class="highlight">&#9474;</span>         <span class="highlight">&#9474;</span>
+  <span class="green">&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9488;</span> <span class="green">&#9484;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9488;</span> <span class="yellow">&#9484;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;</span>
+  <span class="green">&#9474;  Explore  &#9474;</span> <span class="green">&#9474;  Plan    &#9474;</span> <span class="yellow">&#9474;  General  &#9474;</span>
+  <span class="green">&#9474;  Agent    &#9474;</span> <span class="green">&#9474;  Agent   &#9474;</span> <span class="yellow">&#9474;  Purpose  &#9474;</span>
+  <span class="green">&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</span> <span class="green">&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</span> <span class="yellow">&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</span></div>
+
+            <p>This architecture solves the <strong style="color:var(--text)">context window problem</strong>: instead of one agent trying to hold an entire codebase in memory, each subagent maintains context only for its specific domain, leading to better focus and more accurate results.</p>
+
+            <h4>How It Works</h4>
+            <ol>
+              <li>The <strong style="color:var(--text)">main agent</strong> receives your request and creates a plan</li>
+              <li>It identifies subtasks that can be delegated or parallelized</li>
+              <li>It spawns <strong style="color:var(--text)">subagents</strong> via the Task tool with specific instructions</li>
+              <li>Each subagent executes independently within defined boundaries</li>
+              <li>Results flow back to the main agent, which reconciles outputs and resolves conflicts</li>
+              <li>The main agent can spawn additional subagents if needed</li>
+            </ol>
+
+            <div class="guide-tip">
+              <span class="tip-icon">&#9432;</span>
+              <span>Each subagent is a semi-independent process with its own context window. It receives its assignment along with relevant context: which files to focus on, what output is expected, and any constraints to follow.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Built-in Subagent Types -->
+        <div class="guide-section fade-in">
+          <div class="guide-section-header" onclick="toggleGuideSection(this)">
+            <div class="section-icon green">&#9733;</div>
+            <h3>Built-in Subagent Types</h3>
+            <span class="chevron">&#9660;</span>
+          </div>
+          <div class="guide-section-body">
+            <p>Claude Code ships with several specialized subagent types, each optimized for different kinds of work. Choose the right agent for the task to get the best results.</p>
+
+            <div class="feature-grid">
+              <div class="feature-card">
+                <h5><span style="color:var(--green)">&#9679;</span> Explore Agent</h5>
+                <p>Fast codebase exploration using Haiku. Finds files by patterns, searches for keywords, and answers structural questions. Use with thoroughness levels: "quick", "medium", or "very thorough". Read-only &mdash; cannot edit files.</p>
+              </div>
+              <div class="feature-card">
+                <h5><span style="color:var(--accent)">&#9679;</span> Plan Agent</h5>
+                <p>Software architect agent for designing implementation plans. Returns step-by-step plans, identifies critical files, and considers architectural trade-offs. Read-only &mdash; cannot edit files.</p>
+              </div>
+              <div class="feature-card">
+                <h5><span style="color:var(--yellow)">&#9679;</span> General-Purpose Agent</h5>
+                <p>Full-capability agent for complex, multi-step tasks. Has access to all tools including file editing, bash, web search, and more. Use for tasks that require real changes.</p>
+              </div>
+              <div class="feature-card">
+                <h5><span style="color:var(--red)">&#9679;</span> Custom Agents</h5>
+                <p>Define your own specialized agents as Markdown files with YAML frontmatter. Store at <code style="color:var(--accent);font-size:0.75rem">~/.claude/agents/</code> (global) or <code style="color:var(--accent);font-size:0.75rem">.claude/agents/</code> (project).</p>
+              </div>
+            </div>
+
+            <h4>Spawning a Subagent with the Task Tool</h4>
+            <div class="code-block"><span class="comment">// The main agent uses the Task tool to spawn subagents</span>
+<span class="comment">// Each call specifies the agent type and a detailed prompt</span>
+
+Task(
+  <span class="keyword">subagent_type:</span> <span class="string">"Explore"</span>,
+  <span class="keyword">description:</span>  <span class="string">"Find auth endpoints"</span>,
+  <span class="keyword">prompt:</span>       <span class="string">"Search the codebase for all authentication-related</span>
+<span class="string">                 API endpoints in src/routes/ and src/api/"</span>
+)
+
+Task(
+  <span class="keyword">subagent_type:</span> <span class="string">"general-purpose"</span>,
+  <span class="keyword">description:</span>  <span class="string">"Refactor auth module"</span>,
+  <span class="keyword">prompt:</span>       <span class="string">"Refactor the authentication middleware to use</span>
+<span class="string">                 JWT tokens instead of session cookies."</span>
+)</div>
+
+            <div class="guide-warning">
+              <span class="tip-icon">&#9888;</span>
+              <span><strong style="color:var(--text)">Cost awareness:</strong> Each subagent consumes tokens independently. Running multiple agents in parallel increases usage. Limit to 3&ndash;4 concurrent subagents for most work.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Configuring CLAUDE.md -->
+        <div class="guide-section fade-in">
+          <div class="guide-section-header" onclick="toggleGuideSection(this)">
+            <div class="section-icon yellow">&#9881;</div>
+            <h3>Configuring CLAUDE.md for Agent Workflows</h3>
+            <span class="chevron">&#9660;</span>
+          </div>
+          <div class="guide-section-body">
+            <p>CLAUDE.md files provide persistent instructions and context to Claude Code. They are loaded hierarchically and are essential for configuring how agents behave across your project.</p>
+
+            <h4>Hierarchy of CLAUDE.md Files</h4>
+            <div class="code-block"><span class="comment"># Files are loaded in this order (later overrides earlier)</span>
+
+<span class="fn">~/.claude/CLAUDE.md</span>          <span class="comment"># Global &mdash; applies to all projects</span>
+<span class="fn">./CLAUDE.md</span>                    <span class="comment"># Project root &mdash; shared with team</span>
+<span class="fn">./src/CLAUDE.md</span>                <span class="comment"># Directory-level &mdash; scoped context</span>
+<span class="fn">./src/api/CLAUDE.md</span>            <span class="comment"># Deeper nesting for specific areas</span></div>
+
+            <h4>What to Put in CLAUDE.md</h4>
+            <ul>
+              <li><strong style="color:var(--text)">Project conventions</strong> &mdash; coding style, naming patterns, test framework preferences</li>
+              <li><strong style="color:var(--text)">Architecture notes</strong> &mdash; how the system is structured, key design decisions</li>
+              <li><strong style="color:var(--text)">Agent instructions</strong> &mdash; when to spawn subagents, preferred delegation patterns</li>
+              <li><strong style="color:var(--text)">Build &amp; test commands</strong> &mdash; how to run tests, lint, and build the project</li>
+              <li><strong style="color:var(--text)">Boundaries</strong> &mdash; files or directories agents should not modify</li>
+            </ul>
+
+            <h4>Example Project CLAUDE.md</h4>
+            <div class="code-block"><span class="comment"># Project: My API Server</span>
+
+<span class="keyword">## Architecture</span>
+Express.js REST API with PostgreSQL. Routes in <span class="string">src/routes/</span>,
+models in <span class="string">src/models/</span>, middleware in <span class="string">src/middleware/</span>.
+
+<span class="keyword">## Testing</span>
+Run tests with <span class="fn">`npm test`</span>. Integration tests require
+<span class="fn">`docker-compose up -d db`</span> first.
+
+<span class="keyword">## Agent Guidelines</span>
+- Use <span class="string">Explore</span> agents for codebase discovery before changes
+- Use <span class="string">Plan</span> agents for any task touching 3+ files
+- Always run tests after making changes
+- Never modify files in <span class="string">src/generated/</span></div>
+
+            <div class="guide-tip">
+              <span class="tip-icon">&#9432;</span>
+              <span>The better your CLAUDE.md files, the better Claude Code performs. Anthropic's own teams report that well-crafted CLAUDE.md files make Claude Code "excel at routine tasks like setting up new data pipelines."</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: Creating Custom Subagents -->
+        <div class="guide-section fade-in">
+          <div class="guide-section-header" onclick="toggleGuideSection(this)">
+            <div class="section-icon purple">&#9998;</div>
+            <h3>Creating Custom Subagents</h3>
+            <span class="chevron">&#9660;</span>
+          </div>
+          <div class="guide-section-body">
+            <p>Beyond the built-in types, you can define custom subagents as Markdown files with YAML frontmatter. They are automatically available when Claude Code detects a matching task.</p>
+
+            <h4>Agent File Locations &amp; Priority</h4>
+            <div class="code-block"><span class="comment"># Priority (highest to lowest):</span>
+<span class="fn">--agents CLI flag</span>              <span class="comment"># Current session only</span>
+<span class="fn">.claude/agents/</span>               <span class="comment"># Project-level (shared with team)</span>
+<span class="fn">~/.claude/agents/</span>             <span class="comment"># User-level (all projects)</span>
+<span class="fn">Plugin agents/ directory</span>       <span class="comment"># Where plugin is enabled</span></div>
+
+            <h4>Example: Security Audit Agent</h4>
+            <div class="code-block"><span class="comment">---</span>
+<span class="keyword">name:</span> <span class="string">security-auditor</span>
+<span class="keyword">description:</span> <span class="string">Reviews code for security vulnerabilities</span>
+<span class="string">  including OWASP Top 10 concerns</span>
+<span class="keyword">tools:</span>
+  - <span class="string">Read</span>
+  - <span class="string">Grep</span>
+  - <span class="string">Glob</span>
+  - <span class="string">WebSearch</span>
+<span class="comment">---</span>
+
+<span class="keyword"># Security Audit Agent</span>
+
+You are a security-focused code reviewer. When analyzing:
+
+1. Check for <span class="fn">SQL injection</span>, <span class="fn">XSS</span>, <span class="fn">CSRF</span> vulnerabilities
+2. Review authentication and authorization logic
+3. Look for hardcoded secrets or credentials
+4. Verify input validation at system boundaries
+5. Check dependencies for known CVEs
+
+Report with severity: CRITICAL, HIGH, MEDIUM, LOW.
+Reference specific file and line number.</div>
+
+            <h4>Restricting Subagent Spawning</h4>
+            <div class="code-block"><span class="comment"># A coordinator that can only spawn specific agents</span>
+<span class="comment">---</span>
+<span class="keyword">name:</span> <span class="string">coordinator</span>
+<span class="keyword">description:</span> <span class="string">Coordinates work across specialized agents</span>
+<span class="keyword">tools:</span>
+  - <span class="string">Task(worker, researcher)</span>  <span class="comment"># Only these agents</span>
+  - <span class="string">Read</span>
+  - <span class="string">Bash</span>
+<span class="comment">---</span>
+
+<span class="comment"># Note: subagents cannot spawn other subagents</span>
+<span class="comment"># Omit Task from tools list to prevent spawning entirely</span></div>
+          </div>
+        </div>
+
+        <!-- SECTION 5: Parallel Agent Workflows -->
+        <div class="guide-section fade-in">
+          <div class="guide-section-header" onclick="toggleGuideSection(this)">
+            <div class="section-icon green">&#9654;</div>
+            <h3>Parallelizing Agent Work</h3>
+            <span class="chevron">&#9660;</span>
+          </div>
+          <div class="guide-section-body">
+            <p>One of the most powerful patterns in Claude Code is running multiple subagents in parallel. When tasks are independent, launching them simultaneously dramatically reduces total completion time.</p>
+
+            <h4>When to Parallelize</h4>
+            <ul>
+              <li><strong style="color:var(--text)">Independent research</strong> &mdash; searching different parts of the codebase simultaneously</li>
+              <li><strong style="color:var(--text)">Non-overlapping edits</strong> &mdash; modifying files that don't depend on each other</li>
+              <li><strong style="color:var(--text)">Multi-concern analysis</strong> &mdash; security + performance + style checks at once</li>
+              <li><strong style="color:var(--text)">Test + lint</strong> &mdash; running verification steps concurrently</li>
+            </ul>
+
+            <h4>Parallel Task Pattern</h4>
+            <div class="code-block"><span class="comment">// Launch multiple independent agents simultaneously</span>
+<span class="comment">// The main agent sends all Task calls in a single message</span>
+
+Task(<span class="keyword">subagent_type:</span> <span class="string">"Explore"</span>,
+  <span class="keyword">prompt:</span> <span class="string">"Map all REST endpoints in src/routes/"</span>)
+
+Task(<span class="keyword">subagent_type:</span> <span class="string">"Explore"</span>,
+  <span class="keyword">prompt:</span> <span class="string">"Catalog all database models and relationships"</span>)
+
+Task(<span class="keyword">subagent_type:</span> <span class="string">"Plan"</span>,
+  <span class="keyword">prompt:</span> <span class="string">"Design a migration plan from REST to GraphQL"</span>)</div>
+
+            <h4>Background Agents</h4>
+            <p>For long-running tasks, spawn agents in the background so the main agent can continue other work.</p>
+            <div class="code-block">Task(
+  <span class="keyword">subagent_type:</span>    <span class="string">"general-purpose"</span>,
+  <span class="keyword">run_in_background:</span> <span class="fn">true</span>,
+  <span class="keyword">prompt:</span>           <span class="string">"Run the complete test suite"</span>
+)
+
+<span class="comment">// Main agent continues immediately</span>
+<span class="comment">// Gets notified when tests finish</span></div>
+
+            <h4>Isolated Worktrees</h4>
+            <p>For changes that might conflict, use git worktrees to give each agent an isolated copy of the repository.</p>
+            <div class="code-block">Task(
+  <span class="keyword">subagent_type:</span> <span class="string">"general-purpose"</span>,
+  <span class="keyword">isolation:</span>     <span class="string">"worktree"</span>,
+  <span class="keyword">prompt:</span>        <span class="string">"Refactor the auth module to use OAuth2"</span>
+)
+
+<span class="comment">// Agent gets its own copy of the code</span>
+<span class="comment">// Changes only merge if tests pass</span></div>
+
+            <h4>When NOT to Parallelize</h4>
+            <ul>
+              <li>When Task B depends on output from Task A</li>
+              <li>When multiple agents would edit the same files</li>
+              <li>When you need to validate results sequentially</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- SECTION 6: Hooks & MCP Servers -->
+        <div class="guide-section fade-in">
+          <div class="guide-section-header" onclick="toggleGuideSection(this)">
+            <div class="section-icon red">&#9889;</div>
+            <h3>Hooks &amp; MCP Server Integration</h3>
+            <span class="chevron">&#9660;</span>
+          </div>
+          <div class="guide-section-body">
+            <p>Hooks and MCP (Model Context Protocol) servers extend agent workflows with custom automation and external tool access.</p>
+
+            <h4>Hooks</h4>
+            <p>Shell commands that execute in response to agent events: PreToolUse, PostToolUse, Stop, SubagentStart, SubagentStop, TaskCompleted.</p>
+            <div class="code-block"><span class="comment">// In settings.json or .claude/settings.json</span>
+{
+  <span class="keyword">"hooks"</span>: {
+    <span class="string">"PreToolUse"</span>: [{
+      <span class="keyword">"matcher"</span>: <span class="string">"Bash"</span>,
+      <span class="keyword">"hooks"</span>: [{
+        <span class="keyword">"type"</span>: <span class="string">"command"</span>,
+        <span class="keyword">"command"</span>: <span class="string">"echo 'Bash invoked' >> agent.log"</span>
+      }]
+    }],
+    <span class="string">"PostToolUse"</span>: [{
+      <span class="keyword">"matcher"</span>: <span class="string">"Write"</span>,
+      <span class="keyword">"hooks"</span>: [{
+        <span class="keyword">"type"</span>: <span class="string">"command"</span>,
+        <span class="keyword">"command"</span>: <span class="string">"npm run lint --fix"</span>
+      }]
+    }]
+  }
+}
+
+<span class="comment">// Exit codes: 0 = allow, 2 = block the operation</span>
+<span class="comment">// Keep hooks under 500ms to avoid degrading sessions</span></div>
+
+            <h4>MCP Servers</h4>
+            <p>MCP servers provide agents with access to external tools and data sources. They are available to all agents in the session, including subagents.</p>
+            <div class="code-block"><span class="comment">// In settings.json</span>
+{
+  <span class="keyword">"mcpServers"</span>: {
+    <span class="string">"database"</span>: {
+      <span class="keyword">"command"</span>: <span class="string">"npx"</span>,
+      <span class="keyword">"args"</span>: [<span class="string">"@modelcontextprotocol/server-postgres"</span>,
+              <span class="string">"postgresql://localhost/mydb"</span>]
+    },
+    <span class="string">"github"</span>: {
+      <span class="keyword">"command"</span>: <span class="string">"npx"</span>,
+      <span class="keyword">"args"</span>: [<span class="string">"@modelcontextprotocol/server-github"</span>],
+      <span class="keyword">"env"</span>: { <span class="string">"GITHUB_TOKEN"</span>: <span class="string">"${GITHUB_TOKEN}"</span> }
+    }
+  }
+}</div>
+
+            <div class="guide-tip">
+              <span class="tip-icon">&#9432;</span>
+              <span>MCP servers are shared across all agents in the session. Subagents can query databases, access GitHub, or use any MCP tool without additional configuration. When tool descriptions exceed 10% of context, tool search activates automatically.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 7: Agent SDK -->
+        <div class="guide-section fade-in">
+          <div class="guide-section-header" onclick="toggleGuideSection(this)">
+            <div class="section-icon purple">&#10010;</div>
+            <h3>Building with the Claude Agent SDK</h3>
+            <span class="chevron">&#9660;</span>
+          </div>
+          <div class="guide-section-body">
+            <p>For fully custom agent orchestration beyond what Claude Code provides natively, the <strong style="color:var(--text)">Claude Agent SDK</strong> (Python &amp; TypeScript) lets you build and deploy custom multi-agent systems programmatically.</p>
+
+            <h4>Basic Agent SDK Example</h4>
+            <div class="code-block"><span class="keyword">import</span> { <span class="fn">Agent</span>, <span class="fn">tool</span> } <span class="keyword">from</span> <span class="string">"@anthropic-ai/claude-agent-sdk"</span>;
+
+<span class="comment">// Define a specialist agent</span>
+<span class="keyword">const</span> <span class="fn">reviewer</span> = <span class="keyword">new</span> <span class="fn">Agent</span>({
+  <span class="keyword">name:</span>  <span class="string">"code-reviewer"</span>,
+  <span class="keyword">model:</span> <span class="string">"claude-sonnet-4-6"</span>,
+  <span class="keyword">instructions:</span> <span class="string">`Expert code reviewer. Focus on
+    correctness, security, and performance.`</span>,
+  <span class="keyword">tools:</span> [<span class="fn">readFile</span>, <span class="fn">searchCode</span>, <span class="fn">analyzeAST</span>]
+});
+
+<span class="comment">// Define an orchestrator that delegates</span>
+<span class="keyword">const</span> <span class="fn">orchestrator</span> = <span class="keyword">new</span> <span class="fn">Agent</span>({
+  <span class="keyword">name:</span>  <span class="string">"lead-developer"</span>,
+  <span class="keyword">model:</span> <span class="string">"claude-opus-4-6"</span>,
+  <span class="keyword">instructions:</span> <span class="string">`Coordinate development tasks.
+    Delegate reviews to the reviewer agent.`</span>,
+  <span class="keyword">tools:</span> [<span class="fn">reviewer</span>.<span class="fn">asTool</span>(), <span class="fn">editFile</span>, <span class="fn">runTests</span>]
+});
+
+<span class="comment">// Run the orchestrator</span>
+<span class="keyword">const</span> result = <span class="keyword">await</span> <span class="fn">orchestrator</span>.<span class="fn">run</span>(
+  <span class="string">"Review and fix the auth module security issues"</span>
+);</div>
+
+            <div class="guide-tip">
+              <span class="tip-icon">&#9432;</span>
+              <span>Use <strong style="color:var(--text)">Opus</strong> for orchestrator agents needing strong reasoning. Use <strong style="color:var(--text)">Sonnet</strong> for focused specialist tasks. Use <strong style="color:var(--text)">Haiku</strong> for simple, high-volume tasks like file searches. The SDK supports auto-compaction when context nears ~95% capacity.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 8: Real-World Patterns -->
+        <div class="guide-section fade-in">
+          <div class="guide-section-header" onclick="toggleGuideSection(this)">
+            <div class="section-icon yellow">&#9733;</div>
+            <h3>Real-World Workflow Patterns</h3>
+            <span class="chevron">&#9660;</span>
+          </div>
+          <div class="guide-section-body">
+            <h4>Pattern 1: Explore &rarr; Plan &rarr; Execute</h4>
+            <p>The most common pattern. Understand the codebase, plan changes, then execute with confidence.</p>
+            <div class="code-block"><span class="comment">// Step 1: Explore (parallelize research)</span>
+Task(<span class="keyword">subagent_type:</span> <span class="string">"Explore"</span>, <span class="keyword">prompt:</span> <span class="string">"Find all payment code"</span>)
+Task(<span class="keyword">subagent_type:</span> <span class="string">"Explore"</span>, <span class="keyword">prompt:</span> <span class="string">"Find all Stripe API calls"</span>)
+
+<span class="comment">// Step 2: Plan (after exploration returns)</span>
+Task(<span class="keyword">subagent_type:</span> <span class="string">"Plan"</span>, <span class="keyword">prompt:</span> <span class="string">"Design Stripe v2 to v3 migration"</span>)
+
+<span class="comment">// Step 3: Execute (after plan approval)</span>
+Task(<span class="keyword">subagent_type:</span> <span class="string">"general-purpose"</span>, <span class="keyword">prompt:</span> <span class="string">"Implement the plan..."</span>)</div>
+
+            <h4>Pattern 2: Parallel Feature Development</h4>
+            <p>Build independent components simultaneously across different layers.</p>
+            <div class="code-block"><span class="comment">// Three agents working on different parts at once</span>
+Task(<span class="keyword">subagent_type:</span> <span class="string">"general-purpose"</span>,
+  <span class="keyword">prompt:</span> <span class="string">"Build the database schema and models"</span>)
+Task(<span class="keyword">subagent_type:</span> <span class="string">"general-purpose"</span>,
+  <span class="keyword">prompt:</span> <span class="string">"Build the REST API endpoints"</span>)
+Task(<span class="keyword">subagent_type:</span> <span class="string">"general-purpose"</span>,
+  <span class="keyword">prompt:</span> <span class="string">"Build the React components"</span>)</div>
+
+            <h4>Pattern 3: Review &amp; Verify Pipeline</h4>
+            <p>After code changes, run multiple verification agents in parallel.</p>
+            <div class="code-block"><span class="comment">// Verify changes from multiple angles at once</span>
+Task(<span class="keyword">subagent_type:</span> <span class="string">"general-purpose"</span>, <span class="keyword">prompt:</span> <span class="string">"Run test suite"</span>)
+Task(<span class="keyword">subagent_type:</span> <span class="string">"security-auditor"</span>, <span class="keyword">prompt:</span> <span class="string">"Audit changed files"</span>)
+Task(<span class="keyword">subagent_type:</span> <span class="string">"code-reviewer"</span>, <span class="keyword">prompt:</span> <span class="string">"Review all changes"</span>)</div>
+
+            <h4>Pattern 4: Agent Teams (Experimental)</h4>
+            <p>For sustained parallel work, Agent Teams give each agent its own persistent context with peer-to-peer messaging via shared inbox files on disk.</p>
+            <div class="code-block"><span class="comment">// Enable Agent Teams (experimental)</span>
+{
+  <span class="keyword">"env"</span>: {
+    <span class="string">"CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS"</span>: <span class="string">"1"</span>
+  }
+}
+
+<span class="comment">// Teams communicate via JSON inbox files:</span>
+<span class="comment">// ~/.claude/&lt;teamName&gt;/inboxes/&lt;agentName&gt;.json</span>
+<span class="comment">// Start with 3-5 teammates, ~5-6 tasks each</span></div>
+          </div>
+        </div>
+
+        <!-- SECTION 9: Best Practices -->
+        <div class="guide-section fade-in">
+          <div class="guide-section-header" onclick="toggleGuideSection(this)">
+            <div class="section-icon green">&#10003;</div>
+            <h3>Best Practices &amp; Tips</h3>
+            <span class="chevron">&#9660;</span>
+          </div>
+          <div class="guide-section-body">
+            <h4>Agent Management</h4>
+            <ul>
+              <li><strong style="color:var(--text)">Limit concurrency</strong> &mdash; 3&ndash;4 subagents max. More creates coordination overhead that outweighs benefits.</li>
+              <li><strong style="color:var(--text)">Be specific in prompts</strong> &mdash; tell agents exactly which files, directories, or patterns to focus on.</li>
+              <li><strong style="color:var(--text)">Use the right type</strong> &mdash; Explore for reading, Plan for designing, General-Purpose for executing.</li>
+              <li><strong style="color:var(--text)">Don't duplicate work</strong> &mdash; if you delegate to a subagent, don't also perform the same searches yourself.</li>
+            </ul>
+
+            <h4>Context Window Management</h4>
+            <ul>
+              <li><strong style="color:var(--text)">Offload to subagents</strong> &mdash; protect the main context window from excessive search results.</li>
+              <li><strong style="color:var(--text)">Summarize, don't dump</strong> &mdash; have subagents return concise summaries, not raw file contents.</li>
+              <li><strong style="color:var(--text)">Resume, don't restart</strong> &mdash; agents can be resumed by ID, preserving their full prior context.</li>
+              <li><strong style="color:var(--text)">Use persistent memory</strong> &mdash; set <code style="color:var(--accent);font-size:0.75rem">memory: user</code> in agent YAML to build institutional knowledge across sessions.</li>
+            </ul>
+
+            <h4>Reliability</h4>
+            <ul>
+              <li><strong style="color:var(--text)">Always verify</strong> &mdash; run tests after agents make changes.</li>
+              <li><strong style="color:var(--text)">Use CLAUDE.md guardrails</strong> &mdash; specify files and directories agents should never modify.</li>
+              <li><strong style="color:var(--text)">Start simple</strong> &mdash; begin with single-agent workflows, add subagents as complexity demands.</li>
+              <li><strong style="color:var(--text)">Leave code clean</strong> &mdash; each session should make incremental single-feature progress and leave the codebase in a mergeable state.</li>
+            </ul>
+
+            <h4>Settings Hierarchy</h4>
+            <div class="code-block"><span class="comment"># Settings loaded with increasing precedence:</span>
+
+<span class="fn">~/.claude/settings.json</span>            <span class="comment"># User (lowest)</span>
+<span class="fn">.claude/settings.json</span>              <span class="comment"># Project (shared)</span>
+<span class="fn">.claude/settings.local.json</span>         <span class="comment"># Project (personal)</span>
+<span class="fn">Enterprise managed policies</span>         <span class="comment"># Org-level (highest)</span>
+
+<span class="comment"># Run /status inside Claude Code to see active sources</span></div>
+
+            <div class="guide-warning">
+              <span class="tip-icon">&#9888;</span>
+              <span><strong style="color:var(--text)">Start small:</strong> For most day-to-day work, stick with standard Claude Code and reserve multi-agent workflows for architecture reviews, security audits, or complex multi-file refactors. Three focused agents outperform five scattered ones.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer fade-in">
+          Last updated <span>Feb 2026</span>
+          <div class="dot"></div>
+          Powered by Claude Code
+        </div>
+
+      </div>
     </div>
 
     <div class="footer fade-in">
@@ -1964,6 +2726,12 @@
       if (tab === 'notes') fetchNotes();
       if (tab === 'gallery') renderGallery();
     };
+
+    // ===== GUIDE SECTION ACCORDION =====
+    function toggleGuideSection(headerEl) {
+      const section = headerEl.parentElement;
+      section.classList.toggle('open');
+    }
   </script>
 </body>
 </html>
