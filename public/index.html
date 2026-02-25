@@ -1150,6 +1150,11 @@
     @keyframes toastOut {
       to { opacity: 0; transform: translateY(8px) scale(0.95); }
     }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) translateX(var(--drift)) rotate(var(--spin)); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -2369,6 +2374,121 @@ The email was sent in plain text. Obviously.`,
     document.getElementById('cancel-note-btn').addEventListener('click', toggleNoteForm);
     document.getElementById('save-note-btn').addEventListener('click', saveNote);
 
+    // ===== KEYBOARD SHORTCUTS =====
+    document.addEventListener('keydown', (e) => {
+      // Don't trigger in inputs/textareas
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (!authToken) return;
+
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === '1') { e.preventDefault(); navigateTo('monitor'); }
+        if (e.key === '2') { e.preventDefault(); navigateTo('kanban'); }
+        if (e.key === '3') { e.preventDefault(); navigateTo('notes'); }
+        if (e.key === '4') { e.preventDefault(); navigateTo('gallery'); }
+      }
+      if (e.key === 'n' || e.key === 'N') {
+        if (currentPage === 'kanban') toggleAddForm();
+        if (currentPage === 'notes') toggleNoteForm();
+      }
+      if (e.key === 'Escape') {
+        document.getElementById('kanban-add-form').classList.remove('visible');
+        document.getElementById('note-add-form').classList.remove('visible');
+      }
+      if (e.key === '?') showShortcutsHelp();
+    });
+
+    function showShortcutsHelp() {
+      const existing = document.getElementById('shortcuts-overlay');
+      if (existing) { existing.remove(); return; }
+      const overlay = document.createElement('div');
+      overlay.id = 'shortcuts-overlay';
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);';
+      overlay.innerHTML = '<div style="background:var(--surface-solid);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;max-width:380px;width:90%;">' +
+        '<div style="font-size:0.95rem;font-weight:600;color:var(--text);margin-bottom:16px;">Keyboard Shortcuts</div>' +
+        '<div style="display:grid;gap:8px;font-size:0.82rem;">' +
+        ['Ctrl+1–4 → Switch pages', 'N → New task/note', 'Esc → Close forms', '? → This help', '↑↑↓↓←→←→BA → ???']
+          .map(s => '<div style="display:flex;justify-content:space-between;color:var(--text-secondary);padding:6px 0;border-bottom:1px solid var(--border);">' +
+            '<span style="color:var(--accent);font-family:JetBrains Mono,monospace;font-size:0.75rem;">' + s.split(' → ')[0] + '</span>' +
+            '<span>' + s.split(' → ')[1] + '</span></div>').join('') +
+        '</div></div>';
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+      document.body.appendChild(overlay);
+    }
+
+    // ===== KONAMI CODE EASTER EGG =====
+    const konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let konamiIdx = 0;
+    document.addEventListener('keydown', (e) => {
+      if (e.key === konamiCode[konamiIdx]) {
+        konamiIdx++;
+        if (konamiIdx === konamiCode.length) {
+          konamiIdx = 0;
+          triggerMatrixRain();
+        }
+      } else {
+        konamiIdx = 0;
+      }
+    });
+
+    function triggerMatrixRain() {
+      const canvas = document.createElement('canvas');
+      canvas.style.cssText = 'position:fixed;inset:0;z-index:300;pointer-events:none;';
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      document.body.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+      const cols = Math.floor(canvas.width / 14);
+      const drops = Array(cols).fill(1);
+      const chars = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ01234789ABCDEF';
+      let frame = 0;
+      const matrixInterval = setInterval(() => {
+        ctx.fillStyle = 'rgba(0,0,0,0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#34d399';
+        ctx.font = '13px JetBrains Mono, monospace';
+        for (let i = 0; i < drops.length; i++) {
+          const char = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillStyle = Math.random() > 0.95 ? '#fff' : '#34d399';
+          ctx.fillText(char, i * 14, drops[i] * 14);
+          if (drops[i] * 14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+          drops[i]++;
+        }
+        frame++;
+        if (frame > 300) { clearInterval(matrixInterval); canvas.style.transition = 'opacity 1s'; canvas.style.opacity = '0'; setTimeout(() => canvas.remove(), 1000); }
+      }, 33);
+      toast('You found the secret! ↑↑↓↓←→←→BA');
+    }
+
+    // ===== CONFETTI ON TASK COMPLETION =====
+    function fireConfetti() {
+      const colors = ['#8b7cf6','#34d399','#fbbf24','#fb7185','#38bdf8','#f472b6'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = Math.random() * 8 + 4;
+        const x = Math.random() * window.innerWidth;
+        const drift = (Math.random() - 0.5) * 200;
+        confetti.style.cssText = 'position:fixed;z-index:250;pointer-events:none;' +
+          'width:' + size + 'px;height:' + size + 'px;' +
+          'background:' + color + ';' +
+          'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') + ';' +
+          'left:' + x + 'px;top:-10px;' +
+          'animation:confettiFall ' + (Math.random() * 2 + 1.5) + 's ease-out forwards;' +
+          '--drift:' + drift + 'px;--spin:' + (Math.random() * 720 - 360) + 'deg;';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 4000);
+      }
+    }
+
+    // Patch moveTask to detect "done" moves
+    const _origMoveTask = moveTask;
+    moveTask = async function(taskId, targetColumnId) {
+      await _origMoveTask(taskId, targetColumnId);
+      if (targetColumnId === 'done') fireConfetti();
+    };
+
   </script>
+</body>
+</html>
 </body>
 </html>
