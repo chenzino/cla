@@ -785,6 +785,33 @@
       position: relative;
     }
 
+    /* Active / In-Progress column highlighting */
+    .kanban-column[data-column-id="inprogress"] .kanban-task-card {
+      border-color: rgba(139,124,246,0.25);
+      background: linear-gradient(135deg, rgba(139,124,246,0.06) 0%, var(--surface-solid) 100%);
+      box-shadow: 0 0 20px rgba(139,124,246,0.08);
+    }
+    .kanban-column[data-column-id="inprogress"] .kanban-task-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), #6366f1);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+    .kanban-column[data-column-id="inprogress"] .kanban-col-header {
+      color: var(--accent);
+    }
+    .kanban-column[data-column-id="inprogress"] .kanban-col-count {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+    .kanban-column[data-column-id="done"] .kanban-task-card {
+      opacity: 0.6;
+    }
+    .kanban-column[data-column-id="done"] .kanban-task-card:hover {
+      opacity: 0.85;
+    }
+
     .kanban-task-card:hover {
       border-color: var(--border-hover);
       background: rgba(255,255,255,0.04);
@@ -966,6 +993,117 @@
 
     .footer span { color: var(--accent); font-weight: 500; }
 
+    /* ===== GALLERY ===== */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+    @media (max-width: 600px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+    }
+    .gallery-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s;
+      position: relative;
+    }
+    .gallery-card::before {
+      content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent);
+    }
+    .gallery-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+    .gallery-art {
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.55rem;
+      line-height: 1.15;
+      white-space: pre;
+      overflow-x: auto;
+      text-align: center;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-info {
+      padding: 14px 18px;
+      border-top: 1px solid var(--border);
+    }
+    .gallery-title { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+    .gallery-desc { font-size: 0.72rem; color: var(--text-tertiary); margin-top: 4px; }
+
+    /* ===== MOBILE RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      #dashboard { padding: 12px 14px; }
+      header { padding: 14px 0 16px; margin-bottom: 16px; }
+      .header-logo { width: 30px; height: 30px; font-size: 13px; border-radius: 8px; }
+      .header-text h1 { font-size: 0.82rem; }
+      .header-text span { font-size: 0.65rem; }
+      .header-left { gap: 10px; }
+      .header-right { gap: 6px; }
+      .conn-badge { font-size: 0.65rem; padding: 4px 8px; }
+      .btn { font-size: 0.68rem; padding: 5px 10px; }
+
+      .tab-switcher { margin-bottom: 16px; gap: 4px; }
+      .tab-btn { padding: 7px 16px; font-size: 0.72rem; }
+
+      .cards { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+      .card { padding: 14px 16px; border-radius: 12px; }
+      .card .label { font-size: 0.62rem; margin-bottom: 6px; }
+      .card .value { font-size: 1.05rem; }
+      .card .value.dim { font-size: 0.78rem; }
+
+      .section { border-radius: 12px; margin-bottom: 12px; }
+      .section-header { padding: 12px 16px; font-size: 0.68rem; }
+
+      .health-item { font-size: 0.75rem; }
+      #health-panel > div { gap: 8px !important; }
+      #health-panel > div:last-child > div span { font-size: 0.62rem !important; }
+      #health-panel > div:last-child > div div { font-size: 0.78rem !important; }
+
+      .notes-box { padding: 14px 16px; font-size: 0.82rem; }
+
+      .log-viewer { padding: 6px 8px; max-height: 320px; }
+      .log-entry { padding: 8px; gap: 8px; flex-wrap: wrap; }
+      .log-ts { font-size: 0.65rem; min-width: auto; }
+      .log-type { font-size: 0.6rem; padding: 1px 6px; }
+      .log-msg { font-size: 0.78rem; width: 100%; }
+
+      .msg-area { padding: 14px 16px; }
+      .msg-area textarea { font-size: 0.82rem; padding: 12px; min-height: 70px; }
+      .send-row .hint { font-size: 0.65rem; max-width: 55%; }
+      .btn-send { padding: 8px 18px; font-size: 0.78rem; }
+
+      .kanban-toolbar { flex-wrap: wrap; gap: 10px; }
+      .kanban-board { grid-template-columns: 1fr !important; }
+      .kanban-column { min-height: auto; }
+      .kanban-task-card { padding: 14px; }
+      .kanban-form-input { font-size: 0.82rem; }
+      .btn-add-task { font-size: 0.72rem; padding: 7px 14px; }
+
+      .note-card { padding: 16px; }
+      .note-card-title { font-size: 0.88rem; }
+      .note-card-content { font-size: 0.78rem; }
+
+      .footer { padding: 16px; font-size: 0.65rem; }
+
+      .auth-logo { width: 48px; height: 48px; font-size: 20px; }
+      #auth-gate h1 { font-size: 1.2rem; }
+      #auth-gate input { width: 280px; font-size: 0.9rem; padding: 12px 16px; }
+    }
+
+    @media (max-width: 380px) {
+      .cards { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .card .value { font-size: 0.95rem; }
+      .status-dot { width: 6px; height: 6px; margin-right: 6px; }
+      .header-text h1 { font-size: 0.75rem; }
+      .tab-btn { padding: 6px 12px; font-size: 0.68rem; }
+    }
+
     /* ===== SCROLLBAR ===== */
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -1040,6 +1178,7 @@
       <button class="tab-btn active" data-tab="monitor" onclick="switchTab('monitor')">Monitor</button>
       <button class="tab-btn" data-tab="kanban" onclick="switchTab('kanban')">Kanban</button>
       <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">Notes</button>
+      <button class="tab-btn" data-tab="gallery" onclick="switchTab('gallery')">Gallery</button>
     </div>
 
     <!-- MONITOR TAB -->
@@ -1159,6 +1298,14 @@
       </div>
 
       <div id="notes-list" class="fade-in"></div>
+    </div>
+
+    <!-- GALLERY TAB -->
+    <div id="tab-gallery" class="tab-content">
+      <div class="kanban-toolbar fade-in">
+        <span class="kanban-toolbar-title">ASCII Loom Gallery</span>
+      </div>
+      <div class="gallery-grid fade-in" id="gallery-grid"></div>
     </div>
 
     <div class="footer fade-in">
@@ -1656,6 +1803,158 @@
       } catch { toast('Failed to delete'); }
     }
 
+    // ===== GALLERY =====
+    const asciiArt = [
+      {
+        title: "Neural Cascade",
+        desc: "Data flowing through layers of thought",
+        art: `<span style="color:#8b7cf6">         .     *    .        .    *</span>
+<span style="color:#7c6ff7">    *  .    ╔══════════╗    .      *</span>
+<span style="color:#6366f1">   .      ╔╝ <span style="color:#34d399">░░░░░░░░</span> ╚╗      .</span>
+<span style="color:#818cf8">        ╔╝ <span style="color:#34d399">░░░░░░░░░░</span> ╚╗</span>
+<span style="color:#a78bfa">  ═══╗╔╝ <span style="color:#4ade80">░░░▓▓▓▓▓▓░░░</span> ╚╗╔═══</span>
+<span style="color:#c4b5fd">     ║║  <span style="color:#4ade80">░░▓▓████▓▓░░</span>  ║║</span>
+<span style="color:#a78bfa">  ═══╝╚╗ <span style="color:#4ade80">░░░▓▓▓▓▓▓░░░</span> ╔╝╚═══</span>
+<span style="color:#818cf8">        ╚╗ <span style="color:#34d399">░░░░░░░░░░</span> ╔╝</span>
+<span style="color:#6366f1">   .      ╚╗ <span style="color:#34d399">░░░░░░░░</span> ╔╝      .</span>
+<span style="color:#7c6ff7">    *  .    ╚══════════╝    .      *</span>
+<span style="color:#8b7cf6">         .     *    .        .    *</span>`
+      },
+      {
+        title: "Midnight Mountain",
+        desc: "A peak under the stars",
+        art: `<span style="color:#fbbf24">                 ★</span>
+<span style="color:#f9a8d4">            ·  ✦  ·</span>
+<span style="color:#818cf8">          ·    ·    ·</span>
+<span style="color:#e2e8f0">              ▲</span>
+<span style="color:#cbd5e1">             ╱ ╲</span>
+<span style="color:#94a3b8">            ╱   ╲</span>
+<span style="color:#64748b">           ╱  △  ╲</span>
+<span style="color:#475569">          ╱  ╱ ╲  ╲</span>
+<span style="color:#334155">         ╱  ╱   ╲  ╲</span>
+<span style="color:#1e293b">        ╱  ╱ ~~~ ╲  ╲</span>
+<span style="color:#34d399">    ▓▓▓╱▓▓╱▓▓▓▓▓▓▓╲▓▓╲▓▓▓</span>
+<span style="color:#22c55e">   ░░░░░░░░░░░░░░░░░░░░░░░</span>`
+      },
+      {
+        title: "Digital Rain",
+        desc: "Streams of consciousness",
+        art: `<span style="color:#064e3b">0 1 1 0 1 0 0 1 1 0 1</span>
+<span style="color:#065f46">1 0 <span style="color:#34d399">█</span> 1 0 <span style="color:#34d399">█</span> 1 0 <span style="color:#34d399">█</span> 1 0</span>
+<span style="color:#047857">0 1 <span style="color:#4ade80">▓</span> 0 1 <span style="color:#4ade80">▓</span> 0 1 <span style="color:#4ade80">▓</span> 0 1</span>
+<span style="color:#059669">1 0 <span style="color:#6ee7b7">▒</span> 1 0 <span style="color:#6ee7b7">▒</span> 1 0 <span style="color:#6ee7b7">▒</span> 1 0</span>
+<span style="color:#10b981">0 1 <span style="color:#a7f3d0">░</span> 0 1 <span style="color:#a7f3d0">░</span> 0 1 <span style="color:#a7f3d0">░</span> 0 1</span>
+<span style="color:#34d399">1 0 <span style="color:#d1fae5">·</span> 1 0 <span style="color:#d1fae5">·</span> 1 0 <span style="color:#d1fae5">·</span> 1 0</span>
+<span style="color:#6ee7b7">0 1   0 1   0 1   0 1</span>
+<span style="color:#a7f3d0">1 0   1 0   1 0   1 0</span>`
+      },
+      {
+        title: "Celestial Weave",
+        desc: "Threads of starlight woven together",
+        art: `<span style="color:#7c3aed">╔═══╦═══╦═══╦═══╦═══╗</span>
+<span style="color:#8b5cf6">║<span style="color:#fbbf24">★</span>··║··<span style="color:#fbbf24">★</span>║··<span style="color:#fbbf24">★</span>║<span style="color:#fbbf24">★</span>··║··<span style="color:#fbbf24">★</span>║</span>
+<span style="color:#a78bfa">╠═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╣</span>
+<span style="color:#8b5cf6">║··<span style="color:#fbbf24">★</span>║<span style="color:#fbbf24">★</span>··║<span style="color:#fbbf24">★</span>··║··<span style="color:#fbbf24">★</span>║<span style="color:#fbbf24">★</span>··║</span>
+<span style="color:#a78bfa">╠═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╣</span>
+<span style="color:#8b5cf6">║<span style="color:#fbbf24">★</span>··║··<span style="color:#fbbf24">★</span>║··<span style="color:#fbbf24">★</span>║<span style="color:#fbbf24">★</span>··║··<span style="color:#fbbf24">★</span>║</span>
+<span style="color:#a78bfa">╠═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╬═<span style="color:#c084fc">◆</span>═╣</span>
+<span style="color:#8b5cf6">║··<span style="color:#fbbf24">★</span>║<span style="color:#fbbf24">★</span>··║<span style="color:#fbbf24">★</span>··║··<span style="color:#fbbf24">★</span>║<span style="color:#fbbf24">★</span>··║</span>
+<span style="color:#7c3aed">╚═══╩═══╩═══╩═══╩═══╝</span>`
+      },
+      {
+        title: "Ocean Depth",
+        desc: "Layers beneath the surface",
+        art: `<span style="color:#fbbf24">  ~~ ☀ ~~~~~~~~~~~~~~</span>
+<span style="color:#38bdf8">  ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈</span>
+<span style="color:#0ea5e9"> ≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋≋</span>
+<span style="color:#0284c7">  ~~~~ <span style="color:#fb923c">🐠</span> ~~~~~~~~ <span style="color:#a78bfa">🐙</span> ~~</span>
+<span style="color:#0369a1"> ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈</span>
+<span style="color:#075985">   ∿∿∿ <span style="color:#4ade80">⌇</span> ∿∿∿ <span style="color:#4ade80">⌇</span> ∿∿∿</span>
+<span style="color:#0c4a6e">  ░░░ <span style="color:#34d399">⌇⌇</span> ░░░ <span style="color:#34d399">⌇⌇</span> ░░░</span>
+<span style="color:#082f49"> ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒</span>
+<span style="color:#0a1628"> ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>`
+      },
+      {
+        title: "Mandala",
+        desc: "Symmetry in the machine",
+        art: `<span style="color:#4a4a5e">         ·  ·  ·</span>
+<span style="color:#6366f1">      ·  ╲  │  ╱  ·</span>
+<span style="color:#818cf8">    ·  ── <span style="color:#f472b6">◇</span> ─ <span style="color:#f472b6">◇</span> ──  ·</span>
+<span style="color:#a78bfa">   · ╱ <span style="color:#fbbf24">◈</span>  ╲│╱  <span style="color:#fbbf24">◈</span> ╲ ·</span>
+<span style="color:#c4b5fd">  · ── <span style="color:#34d399">◆</span> ── <span style="color:#fb7185">✦</span> ── <span style="color:#34d399">◆</span> ── ·</span>
+<span style="color:#a78bfa">   · ╲ <span style="color:#fbbf24">◈</span>  ╱│╲  <span style="color:#fbbf24">◈</span> ╱ ·</span>
+<span style="color:#818cf8">    ·  ── <span style="color:#f472b6">◇</span> ─ <span style="color:#f472b6">◇</span> ──  ·</span>
+<span style="color:#6366f1">      ·  ╱  │  ╲  ·</span>
+<span style="color:#4a4a5e">         ·  ·  ·</span>`
+      },
+      {
+        title: "Circuit Board",
+        desc: "Pathways of silicon dreams",
+        art: `<span style="color:#34d399">┌──┐  ┌──┐  ┌──┐</span>
+<span style="color:#4ade80">│<span style="color:#fbbf24">▪▪</span>├──┤<span style="color:#fbbf24">▪▪</span>├──┤<span style="color:#fbbf24">▪▪</span>│</span>
+<span style="color:#34d399">└─┬┘  └─┬┘  └─┬┘</span>
+<span style="color:#059669">  │  ┌──┼──┐  │</span>
+<span style="color:#047857">  ├──┤<span style="color:#fb7185">◉◉</span>├──┤──┤</span>
+<span style="color:#059669">  │  └──┼──┘  │</span>
+<span style="color:#34d399">┌─┴┐  ┌─┴┐  ┌─┴┐</span>
+<span style="color:#4ade80">│<span style="color:#fbbf24">▪▪</span>├──┤<span style="color:#fbbf24">▪▪</span>├──┤<span style="color:#fbbf24">▪▪</span>│</span>
+<span style="color:#34d399">└──┘  └──┘  └──┘</span>`
+      },
+      {
+        title: "Aurora",
+        desc: "Northern lights rendered in text",
+        art: `<span style="color:#1e1b4b">·  ·  ·  ·  ·  ·  ·  ·  · </span>
+<span style="color:#4c1d95"> ╲    ╱╲    ╱╲    ╱╲    ╱</span>
+<span style="color:#6d28d9">  ╲<span style="color:#34d399">░░</span>╱  ╲<span style="color:#4ade80">░░</span>╱  ╲<span style="color:#22d3ee">░░</span>╱  ╲</span>
+<span style="color:#7c3aed">   <span style="color:#34d399">▒▒▒</span>  <span style="color:#4ade80">▒▒▒▒</span>  <span style="color:#22d3ee">▒▒▒</span>   ╱</span>
+<span style="color:#8b5cf6">  <span style="color:#6ee7b7">▓▓▓▓▓</span><span style="color:#86efac">▓▓▓▓▓▓</span><span style="color:#67e8f9">▓▓▓▓▓</span></span>
+<span style="color:#a78bfa">  <span style="color:#a7f3d0">░░░░░░</span><span style="color:#bbf7d0">░░░░░░</span><span style="color:#a5f3fc">░░░░░</span></span>
+<span style="color:#c4b5fd">   <span style="color:#d1fae5">· · ·</span> <span style="color:#dcfce7">· · · ·</span> <span style="color:#cffafe">· · ·</span></span>
+<span style="color:#1e293b">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+<span style="color:#0f172a">████████████████████████</span>`
+      },
+      {
+        title: "Zen Garden",
+        desc: "Raked sand and stone",
+        art: `<span style="color:#78716c">╭─────────────────────╮</span>
+<span style="color:#a8a29e">│ ～～～～～～～～～～ │</span>
+<span style="color:#d6d3d1">│ ～～ <span style="color:#57534e">◉</span> ～～～～～～ │</span>
+<span style="color:#a8a29e">│ ～～～～～～～～～～ │</span>
+<span style="color:#d6d3d1">│ ～～～～～～ <span style="color:#57534e">◉</span> ～～ │</span>
+<span style="color:#a8a29e">│ ～～～～～～～～～～ │</span>
+<span style="color:#d6d3d1">│ ～ <span style="color:#57534e">◉</span> ～～～～～～～ │</span>
+<span style="color:#a8a29e">│ ～～～～～～～～～～ │</span>
+<span style="color:#78716c">╰─────────────────────╯</span>
+<span style="color:#57534e">   <span style="color:#4ade80">🌿</span>              <span style="color:#4ade80">🌿</span></span>`
+      },
+      {
+        title: "Warp Drive",
+        desc: "Faster than light",
+        art: `<span style="color:#1e1b4b">            ·</span>
+<span style="color:#312e81">        ·  ╱ ╲  ·</span>
+<span style="color:#3730a3">     ── ╱ <span style="color:#818cf8">═══</span> ╲ ──</span>
+<span style="color:#4338ca">   ─ ╱ <span style="color:#a78bfa">══════</span>  ╲ ─</span>
+<span style="color:#4f46e5"> ── ╱ <span style="color:#c4b5fd">════<span style="color:#fbbf24">◈</span>════</span> ╲ ──</span>
+<span style="color:#4338ca">   ─ ╲ <span style="color:#a78bfa">══════</span>  ╱ ─</span>
+<span style="color:#3730a3">     ── ╲ <span style="color:#818cf8">═══</span> ╱ ──</span>
+<span style="color:#312e81">        ·  ╲ ╱  ·</span>
+<span style="color:#1e1b4b">            ·</span>`
+      }
+    ];
+
+    function renderGallery() {
+      const grid = document.getElementById('gallery-grid');
+      grid.innerHTML = asciiArt.map(a => `
+        <div class="gallery-card">
+          <div class="gallery-art">${a.art}</div>
+          <div class="gallery-info">
+            <div class="gallery-title">${a.title}</div>
+            <div class="gallery-desc">${a.desc}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
     // Update switchTab to handle notes
     const origSwitchTab = switchTab;
     switchTab = function(tab) {
@@ -1663,6 +1962,7 @@
       document.querySelectorAll('.tab-content').forEach(el => el.classList.toggle('active', el.id === 'tab-' + tab));
       if (tab === 'kanban') fetchKanban();
       if (tab === 'notes') fetchNotes();
+      if (tab === 'gallery') renderGallery();
     };
   </script>
 </body>
