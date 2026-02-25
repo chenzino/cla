@@ -1,0 +1,7 @@
+tunnel: 1cb9d434-3f45-404c-8a2c-71f43375443a
+ingress:
+  - hostname: chenzoo.com
+    service: http://localhost:3000
+  - hostname: claw.chenzoo.com
+    service: http://localhost:3000
+  - service: http_status:404
