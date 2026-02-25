@@ -1968,9 +1968,94 @@
       box-shadow: 0 2px 12px rgba(52,211,153,0.25);
     }
     .snake-start-btn:hover { box-shadow: 0 4px 20px rgba(52,211,153,0.4); transform: translateY(-1px); }
+
+    /* ===== PROGRESS RINGS ===== */
+    .progress-rings {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .progress-ring-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .progress-ring-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    }
+    .progress-ring-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+    .prog-ring { width: 90px; height: 90px; margin: 0 auto 8px; position: relative; }
+    .prog-ring svg { width: 90px; height: 90px; transform: rotate(-90deg); }
+    .prog-ring .ring-bg { fill: none; stroke: var(--border); stroke-width: 5; }
+    .prog-ring .ring-fill {
+      fill: none;
+      stroke-width: 5;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s ease;
+    }
+    .prog-ring-value {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .prog-ring-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+
+    /* ===== 3D CARD TILT ===== */
+    .tilt-card {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      transition: transform 0.1s ease;
+    }
+    .tilt-card .tilt-shine {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      background: radial-gradient(circle at var(--shine-x, 50%) var(--shine-y, 50%), rgba(255,255,255,0.08) 0%, transparent 60%);
+    }
+    .tilt-card:hover .tilt-shine { opacity: 1; }
+
+    /* ===== PARTICLE BACKGROUND ===== */
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      .progress-rings { grid-template-columns: repeat(2, 1fr); }
+      .prog-ring { width: 70px; height: 70px; }
+      .prog-ring svg { width: 70px; height: 70px; }
+      .prog-ring-value { font-size: 0.82rem; }
+    }
   </style>
 </head>
 <body>
+  <canvas id="particle-canvas"></canvas>
 
   <!-- AUTH GATE -->
   <div id="auth-gate">
@@ -2070,6 +2155,68 @@
         <div class="stat-item">
           <div class="stat-number" id="stat-uptime">-</div>
           <div class="stat-label">Days Up</div>
+        </div>
+      </div>
+
+      <!-- PROGRESS RINGS -->
+      <div class="progress-rings fade-in" id="progress-rings">
+        <div class="progress-ring-card">
+          <div class="prog-ring">
+            <svg viewBox="0 0 90 90">
+              <circle class="ring-bg" cx="45" cy="45" r="38"/>
+              <circle class="ring-fill" id="ring-tasks" cx="45" cy="45" r="38"
+                stroke-dasharray="238.76" stroke-dashoffset="238.76" stroke="url(#grad-purple)"/>
+            </svg>
+            <div class="prog-ring-value" id="ring-tasks-val" style="color:var(--accent);">0%</div>
+          </div>
+          <div class="prog-ring-label">Tasks Done</div>
+          <defs><svg width="0" height="0"><defs>
+            <linearGradient id="grad-purple" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#8b7cf6"/><stop offset="100%" stop-color="#6366f1"/>
+            </linearGradient>
+            <linearGradient id="grad-green" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#34d399"/><stop offset="100%" stop-color="#10b981"/>
+            </linearGradient>
+            <linearGradient id="grad-yellow" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="grad-red" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fb7185"/><stop offset="100%" stop-color="#ef4444"/>
+            </linearGradient>
+          </defs></svg></defs>
+        </div>
+        <div class="progress-ring-card">
+          <div class="prog-ring">
+            <svg viewBox="0 0 90 90">
+              <circle class="ring-bg" cx="45" cy="45" r="38"/>
+              <circle class="ring-fill" id="ring-memory" cx="45" cy="45" r="38"
+                stroke-dasharray="238.76" stroke-dashoffset="238.76" stroke="url(#grad-green)"/>
+            </svg>
+            <div class="prog-ring-value" id="ring-memory-val" style="color:var(--green);">0%</div>
+          </div>
+          <div class="prog-ring-label">Memory</div>
+        </div>
+        <div class="progress-ring-card">
+          <div class="prog-ring">
+            <svg viewBox="0 0 90 90">
+              <circle class="ring-bg" cx="45" cy="45" r="38"/>
+              <circle class="ring-fill" id="ring-disk" cx="45" cy="45" r="38"
+                stroke-dasharray="238.76" stroke-dashoffset="238.76" stroke="url(#grad-yellow)"/>
+            </svg>
+            <div class="prog-ring-value" id="ring-disk-val" style="color:var(--yellow);">0%</div>
+          </div>
+          <div class="prog-ring-label">Disk</div>
+        </div>
+        <div class="progress-ring-card">
+          <div class="prog-ring">
+            <svg viewBox="0 0 90 90">
+              <circle class="ring-bg" cx="45" cy="45" r="38"/>
+              <circle class="ring-fill" id="ring-cpu" cx="45" cy="45" r="38"
+                stroke-dasharray="238.76" stroke-dashoffset="238.76" stroke="url(#grad-red)"/>
+            </svg>
+            <div class="prog-ring-value" id="ring-cpu-val" style="color:var(--red);">0%</div>
+          </div>
+          <div class="prog-ring-label">CPU Load</div>
         </div>
       </div>
 
@@ -4435,8 +4582,186 @@ The email was sent in plain text. Obviously.`,
     // Draw initial snake
     drawSnake();
 
+    // ===== PROGRESS RINGS =====
+    const RING_CIRC = 2 * Math.PI * 38; // r=38
+
+    function setRing(id, valId, percent, label) {
+      const ring = document.getElementById(id);
+      const valEl = document.getElementById(valId);
+      if (!ring || !valEl) return;
+      const offset = RING_CIRC * (1 - Math.min(percent, 100) / 100);
+      ring.style.strokeDashoffset = offset;
+      valEl.textContent = Math.round(percent) + '%';
+    }
+
+    async function updateProgressRings() {
+      try {
+        // Tasks
+        const kanbanResp = await api('/api/kanban');
+        const kanban = await kanbanResp.json();
+        if (kanban.columns) {
+          const total = kanban.columns.reduce((s, c) => s + c.tasks.length, 0);
+          const done = (kanban.columns.find(c => c.id === 'done')?.tasks.length || 0);
+          setRing('ring-tasks', 'ring-tasks-val', total > 0 ? (done / total) * 100 : 0);
+        }
+
+        // Health data
+        const healthResp = await api('/api/health');
+        const h = await healthResp.json();
+
+        if (h.system.memory && h.system.memory.totalMB) {
+          const memPct = (h.system.memory.usedMB / h.system.memory.totalMB) * 100;
+          setRing('ring-memory', 'ring-memory-val', memPct);
+        }
+
+        if (h.system.disk && h.system.disk.usePercent) {
+          const diskPct = parseInt(h.system.disk.usePercent) || 0;
+          setRing('ring-disk', 'ring-disk-val', diskPct);
+        }
+
+        // CPU load (approximate: load avg / num cores * 100, cap at 100)
+        if (h.system.loadAvg) {
+          const load1 = parseFloat(h.system.loadAvg.split(',')[0]) || 0;
+          const cpuPct = Math.min(load1 * 50, 100); // approximate single core
+          setRing('ring-cpu', 'ring-cpu-val', cpuPct);
+        }
+      } catch {}
+    }
+
+    if (authToken) {
+      setTimeout(updateProgressRings, 3000);
+      setInterval(updateProgressRings, 30000);
+    }
+
+    // ===== 3D CARD TILT EFFECT =====
+    function initTiltCards() {
+      document.querySelectorAll('.card, .stat-item, .sparkline-card, .progress-ring-card').forEach(card => {
+        // Add shine layer
+        if (!card.querySelector('.tilt-shine')) {
+          card.classList.add('tilt-card');
+          const shine = document.createElement('div');
+          shine.className = 'tilt-shine';
+          card.appendChild(shine);
+        }
+
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -5;
+          const rotateY = ((x - centerX) / centerX) * 5;
+          card.style.transform = 'perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateY(-2px)';
+          card.style.setProperty('--shine-x', ((x / rect.width) * 100) + '%');
+          card.style.setProperty('--shine-y', ((y / rect.height) * 100) + '%');
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+        });
+      });
+    }
+    // Init after a small delay so DOM is ready
+    setTimeout(initTiltCards, 500);
+
+    // ===== PARTICLE BACKGROUND =====
+    (function initParticles() {
+      const canvas = document.getElementById('particle-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let mouseX = 0, mouseY = 0;
+      let animId;
+      const PARTICLE_COUNT = 50;
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+
+      function createParticle() {
+        return {
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 2 + 0.5,
+          speedX: (Math.random() - 0.5) * 0.3,
+          speedY: (Math.random() - 0.5) * 0.3,
+          opacity: Math.random() * 0.4 + 0.1,
+          pulse: Math.random() * Math.PI * 2,
+        };
+      }
+
+      // Initialize particles
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push(createParticle());
+      }
+
+      function drawParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach(p => {
+          // Mouse interaction - gentle push
+          const dx = p.x - mouseX;
+          const dy = p.y - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            const force = (120 - dist) / 120 * 0.3;
+            p.speedX += (dx / dist) * force * 0.1;
+            p.speedY += (dy / dist) * force * 0.1;
+          }
+
+          // Damping
+          p.speedX *= 0.99;
+          p.speedY *= 0.99;
+
+          p.x += p.speedX;
+          p.y += p.speedY;
+          p.pulse += 0.02;
+
+          // Wrap
+          if (p.x < 0) p.x = canvas.width;
+          if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height;
+          if (p.y > canvas.height) p.y = 0;
+
+          const alpha = p.opacity * (0.7 + 0.3 * Math.sin(p.pulse));
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(139, 124, 246, ' + alpha + ')';
+          ctx.fill();
+        });
+
+        // Draw connections between nearby particles
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 100) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = 'rgba(139, 124, 246, ' + (0.06 * (1 - dist / 100)) + ')';
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+
+        animId = requestAnimationFrame(drawParticles);
+      }
+
+      drawParticles();
+    })();
+
   </script>
-</body>
-</html>
 </body>
 </html>
