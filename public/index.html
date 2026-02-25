@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude Code Monitor</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#8b7cf6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -1381,9 +1386,9 @@
       document.querySelectorAll('.tab-content').forEach(el => {
         el.classList.toggle('active', el.id === 'tab-' + tab);
       });
-      if (tab === 'kanban') {
-        fetchKanban();
-      }
+      if (tab === 'kanban') fetchKanban();
+      if (tab === 'notes') fetchNotes();
+      if (tab === 'gallery') renderGallery();
     }
 
     // ===== HEALTH =====
@@ -1569,8 +1574,8 @@
                          ondragstart="onDragStart(event)"
                          ondragend="onDragEnd(event)">
               <button class="kanban-task-delete" onclick="deleteKanbanTask('${task.id}')" title="Delete">x</button>
-              <div class="kanban-task-title">${esc(task.title)}</div>
-              ${descHtml}
+              <div class="kanban-task-title" ondblclick="inlineEditTask('${task.id}','title',this)">${esc(task.title)}</div>
+              ${task.description ? `<div class="kanban-task-desc" ondblclick="inlineEditTask('${task.id}','desc',this)">${esc(task.description)}</div>` : `<div class="kanban-task-desc" ondblclick="inlineEditTask('${task.id}','desc',this)" style="opacity:0.3;font-style:italic">+ description</div>`}
               <div class="kanban-task-actions">
                 ${canMoveLeft
                   ? `<button class="kanban-task-btn" onclick="moveTask('${task.id}','${COLUMN_ORDER[colIdx - 1]}')" title="Move left">&larr;</button>`
@@ -1718,6 +1723,47 @@
       if (taskId && targetColumnId) {
         moveTask(taskId, targetColumnId);
       }
+    }
+
+    // Inline edit kanban task
+    function inlineEditTask(taskId, field, el) {
+      const current = el.textContent;
+      const input = document.createElement(field === 'desc' ? 'textarea' : 'input');
+      input.value = current === '+ description' ? '' : current;
+      input.className = 'kanban-form-input';
+      input.style.fontSize = '0.82rem';
+      input.style.padding = '6px 8px';
+      if (field === 'desc') { input.style.minHeight = '50px'; input.style.resize = 'vertical'; }
+      el.replaceWith(input);
+      input.focus();
+
+      const save = async () => {
+        const body = field === 'title' ? { title: input.value } : { description: input.value };
+        try {
+          await api('/api/kanban/task/' + taskId, { method: 'PUT', body: JSON.stringify(body) });
+          fetchKanban();
+        } catch { toast('Failed to update'); }
+      };
+      input.addEventListener('blur', save);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); input.blur(); }
+        if (e.key === 'Escape') { fetchKanban(); }
+      });
+    }
+
+    // Export data
+    function exportData(type) {
+      const a = document.createElement('a');
+      a.href = '/api/export/' + type;
+      a.download = type + '.json';
+      // Need to fetch with auth
+      api('/api/export/' + type).then(r => r.blob()).then(blob => {
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast('Exported ' + type);
+      }).catch(() => toast('Export failed'));
     }
 
     // Handle Enter key in kanban title input
@@ -1955,15 +2001,6 @@
       `).join('');
     }
 
-    // Update switchTab to handle notes
-    const origSwitchTab = switchTab;
-    switchTab = function(tab) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.toggle('active', el.id === 'tab-' + tab));
-      if (tab === 'kanban') fetchKanban();
-      if (tab === 'notes') fetchNotes();
-      if (tab === 'gallery') renderGallery();
-    };
   </script>
 </body>
 </html>
