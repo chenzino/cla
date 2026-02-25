@@ -1,0 +1,19 @@
+{
+  "usage": {
+    "status": "active",
+    "currentUsage": "running",
+    "limitHit": false,
+    "limitResetTime": null,
+    "lastUpdated": "2026-02-25T00:00:00Z",
+    "sessionStarted": "2026-02-25T00:00:00Z",
+    "notes": "Session active - building dashboard"
+  },
+  "logs": [
+    {
+      "timestamp": "2026-02-25T00:00:00Z",
+      "type": "system",
+      "message": "Claude Code session started. Building monitor dashboard."
+    }
+  ],
+  "messages": []
+}

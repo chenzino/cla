@@ -889,6 +889,61 @@
       font-weight: 400;
     }
 
+    /* ===== NOTE CARDS ===== */
+    .note-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      transition: all 0.2s;
+    }
+    .note-card::before {
+      content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent);
+    }
+    .note-card:hover { border-color: var(--border-hover); }
+    .note-card-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px; }
+    .note-card-title { font-size:0.95rem;font-weight:600;color:var(--text); }
+    .note-card-date { font-size:0.68rem;color:var(--text-tertiary);white-space:nowrap; }
+    .note-card-content {
+      font-size:0.84rem;color:var(--text-secondary);line-height:1.7;
+      white-space:pre-wrap;word-break:break-word;
+    }
+    .note-card-actions {
+      display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);
+    }
+    .note-empty { color:var(--text-tertiary);font-size:0.85rem;text-align:center;padding:40px; }
+    .note-card.editing .note-card-content { display:none; }
+    .note-edit-area {
+      display:none;width:100%;background:rgba(255,255,255,0.02);border:1px solid var(--border);
+      color:var(--text);padding:12px;font-family:'Inter',sans-serif;font-size:0.84rem;
+      border-radius:8px;resize:vertical;min-height:100px;outline:none;line-height:1.6;
+      margin-top:8px;
+    }
+    .note-card.editing .note-edit-area { display:block; }
+
+    /* ===== HEALTH ITEMS ===== */
+    .health-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    .h-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+    .h-dot.up { background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
+    .h-dot.down { background: var(--red); box-shadow: 0 0 8px rgba(251,113,133,0.4); }
+
     /* ===== FOOTER ===== */
     .footer {
       font-size: 0.7rem;
@@ -984,6 +1039,7 @@
     <div class="tab-switcher fade-in">
       <button class="tab-btn active" data-tab="monitor" onclick="switchTab('monitor')">Monitor</button>
       <button class="tab-btn" data-tab="kanban" onclick="switchTab('kanban')">Kanban</button>
+      <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">Notes</button>
     </div>
 
     <!-- MONITOR TAB -->
@@ -1004,6 +1060,25 @@
         <div class="card">
           <div class="label">Last Sync</div>
           <div class="value dim" id="card-updated">--</div>
+        </div>
+      </div>
+
+      <!-- SYSTEM HEALTH -->
+      <div class="section fade-in">
+        <div class="section-header">System Health</div>
+        <div style="padding:16px 22px;" id="health-panel">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+            <div class="health-item" id="h-claude"><span class="h-dot"></span>Claude Code</div>
+            <div class="health-item" id="h-server"><span class="h-dot"></span>Server</div>
+            <div class="health-item" id="h-tunnel"><span class="h-dot"></span>Tunnel</div>
+            <div class="health-item" id="h-monitor"><span class="h-dot"></span>Monitor</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+            <div><span style="font-size:0.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-tertiary);font-weight:500;">Uptime</span><div style="font-size:0.88rem;color:var(--text);margin-top:4px;" id="h-uptime">--</div></div>
+            <div><span style="font-size:0.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-tertiary);font-weight:500;">Memory</span><div style="font-size:0.88rem;color:var(--text);margin-top:4px;" id="h-memory">--</div></div>
+            <div><span style="font-size:0.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-tertiary);font-weight:500;">Disk</span><div style="font-size:0.88rem;color:var(--text);margin-top:4px;" id="h-disk">--</div></div>
+            <div><span style="font-size:0.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-tertiary);font-weight:500;">Load</span><div style="font-size:0.88rem;color:var(--text);margin-top:4px;" id="h-load">--</div></div>
+          </div>
         </div>
       </div>
 
@@ -1061,6 +1136,31 @@
       </div>
     </div>
 
+    <!-- NOTES TAB -->
+    <div id="tab-notes" class="tab-content">
+      <div class="kanban-toolbar fade-in">
+        <span class="kanban-toolbar-title">Notes</span>
+        <button class="btn-add-task" onclick="toggleNoteForm()">+ New Note</button>
+      </div>
+
+      <div class="kanban-add-form fade-in" id="note-add-form">
+        <div class="kanban-form-row">
+          <label class="kanban-form-label">Title</label>
+          <input type="text" class="kanban-form-input" id="note-title" placeholder="Note title...">
+        </div>
+        <div class="kanban-form-row">
+          <label class="kanban-form-label">Content</label>
+          <textarea class="kanban-form-input" id="note-content" placeholder="Write your note..." style="min-height:120px;"></textarea>
+        </div>
+        <div class="kanban-form-actions">
+          <button class="btn" onclick="toggleNoteForm()">Cancel</button>
+          <button class="btn-send" onclick="saveNote()" style="padding:8px 18px;font-size:0.78rem;">Save Note</button>
+        </div>
+      </div>
+
+      <div id="notes-list" class="fade-in"></div>
+    </div>
+
     <div class="footer fade-in">
       Auto-refresh <span>15s</span>
       <div class="dot"></div>
@@ -1108,7 +1208,9 @@
       const dash = document.getElementById('dashboard');
       dash.style.display = 'block';
       fetchStatus();
+      fetchHealth();
       setInterval(fetchStatus, 15000);
+      setInterval(fetchHealth, 30000);
     }
 
     function logout() {
@@ -1135,6 +1237,34 @@
       if (tab === 'kanban') {
         fetchKanban();
       }
+    }
+
+    // ===== HEALTH =====
+    async function fetchHealth() {
+      try {
+        const resp = await api('/api/health');
+        if (!resp.ok) return;
+        const h = await resp.json();
+
+        const setDot = (id, up) => {
+          const el = document.querySelector('#' + id + ' .h-dot');
+          if (el) { el.className = 'h-dot ' + (up ? 'up' : 'down'); }
+        };
+        setDot('h-claude', h.processes.claude);
+        setDot('h-server', h.processes.server);
+        setDot('h-tunnel', h.processes.tunnel);
+        setDot('h-monitor', h.processes.monitor);
+
+        document.getElementById('h-uptime').textContent = h.system.uptime || '--';
+        if (h.system.memory.totalMB) {
+          const pct = Math.round((h.system.memory.usedMB / h.system.memory.totalMB) * 100);
+          document.getElementById('h-memory').textContent = h.system.memory.usedMB + ' / ' + h.system.memory.totalMB + ' MB (' + pct + '%)';
+        }
+        if (h.system.disk.used) {
+          document.getElementById('h-disk').textContent = h.system.disk.used + ' / ' + h.system.disk.total + ' (' + h.system.disk.usePercent + ')';
+        }
+        document.getElementById('h-load').textContent = h.system.loadAvg || '--';
+      } catch (e) {}
     }
 
     // ===== MONITOR FUNCTIONS =====
@@ -1447,6 +1577,93 @@
     document.getElementById('kanban-task-title').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); addKanbanTask(); }
     });
+
+    // ===== NOTES FUNCTIONS =====
+    let notesData = [];
+
+    function toggleNoteForm() {
+      document.getElementById('note-add-form').classList.toggle('visible');
+    }
+
+    async function fetchNotes() {
+      try {
+        const resp = await api('/api/notes');
+        if (resp.ok) { notesData = await resp.json(); renderNotes(); }
+      } catch {}
+    }
+
+    function renderNotes() {
+      const list = document.getElementById('notes-list');
+      if (!notesData.length) {
+        list.innerHTML = '<div class="note-empty">No notes yet. Create one to get started.</div>';
+        return;
+      }
+      list.innerHTML = notesData.slice().reverse().map(n => {
+        const date = new Date(n.updatedAt || n.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        return `<div class="note-card" id="note-${n.id}">
+          <div class="note-card-header">
+            <div class="note-card-title">${esc(n.title)}</div>
+            <div class="note-card-date">${date}</div>
+          </div>
+          <div class="note-card-content">${esc(n.content || '')}</div>
+          <textarea class="note-edit-area" id="note-edit-${n.id}">${esc(n.content || '')}</textarea>
+          <div class="note-card-actions">
+            <button class="btn" onclick="editNote('${n.id}')">Edit</button>
+            <button class="btn btn-danger" onclick="deleteNote('${n.id}')">Delete</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    async function saveNote() {
+      const title = document.getElementById('note-title').value.trim();
+      const content = document.getElementById('note-content').value.trim();
+      if (!title) return;
+      try {
+        const resp = await api('/api/notes', { method: 'POST', body: JSON.stringify({ title, content }) });
+        if (resp.ok) {
+          document.getElementById('note-title').value = '';
+          document.getElementById('note-content').value = '';
+          document.getElementById('note-add-form').classList.remove('visible');
+          toast('Note saved');
+          fetchNotes();
+        }
+      } catch { toast('Failed to save note'); }
+    }
+
+    async function editNote(id) {
+      const card = document.getElementById('note-' + id);
+      if (card.classList.contains('editing')) {
+        // Save
+        const textarea = document.getElementById('note-edit-' + id);
+        try {
+          await api('/api/notes/' + id, { method: 'PUT', body: JSON.stringify({ content: textarea.value }) });
+          toast('Note updated');
+          fetchNotes();
+        } catch { toast('Failed to update'); }
+      } else {
+        card.classList.add('editing');
+        const btn = card.querySelector('.note-card-actions .btn');
+        btn.textContent = 'Save';
+        document.getElementById('note-edit-' + id).focus();
+      }
+    }
+
+    async function deleteNote(id) {
+      try {
+        const resp = await api('/api/notes/' + id, { method: 'DELETE' });
+        if (resp.ok) { toast('Note deleted'); fetchNotes(); }
+      } catch { toast('Failed to delete'); }
+    }
+
+    // Update switchTab to handle notes
+    const origSwitchTab = switchTab;
+    switchTab = function(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.toggle('active', el.id === 'tab-' + tab));
+      if (tab === 'kanban') fetchKanban();
+      if (tab === 'notes') fetchNotes();
+    };
   </script>
 </body>
 </html>

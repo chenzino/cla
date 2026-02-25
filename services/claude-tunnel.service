@@ -1,0 +1,13 @@
+[Unit]
+Description=Cloudflare Tunnel for Claude Monitor
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+ExecStart=/usr/bin/cloudflared --protocol http2 tunnel --config /home/ubuntu/cla/tunnel-config.yml run --token eyJhIjoiYmZiNjgxNDgwMzgxYzZjOTYwMTIyNjlhNTk2Mjg5YzQiLCJ0IjoiMWNiOWQ0MzQtM2Y0NS00MDRjLThhMmMtNzFmNDMzNzU0NDNhIiwicyI6IlpUSTVObVF6WXprdE1UbGtNUzAwWXpsakxUZ3dZbUV0TWpReU1qQmpZMkppT1dNdyJ9
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

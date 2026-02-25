@@ -1,0 +1,15 @@
+[Unit]
+Description=Claude Code Monitor Server
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/cla
+ExecStart=/usr/bin/node /home/ubuntu/cla/server.js
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

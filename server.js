@@ -2,6 +2,8 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = 3000;
@@ -9,250 +11,314 @@ const PORT = 3000;
 const STATUS_FILE = path.join(__dirname, 'data', 'status.json');
 const MESSAGES_FILE = path.join(__dirname, 'data', 'messages.json');
 const KANBAN_FILE = path.join(__dirname, 'data', 'kanban.json');
+const NOTES_FILE = path.join(__dirname, 'data', 'notes.json');
 
 // Ensure data dir exists
 if (!fs.existsSync(path.join(__dirname, 'data'))) {
   fs.mkdirSync(path.join(__dirname, 'data'), { recursive: true });
 }
 
-// Init status file if missing
-if (!fs.existsSync(STATUS_FILE)) {
-  fs.writeFileSync(STATUS_FILE, JSON.stringify({
-    usage: {
-      status: "active",
-      limitHit: false,
-      limitResetTime: null,
-      lastUpdated: new Date().toISOString(),
-      sessionStarted: new Date().toISOString(),
-      notes: "Claude Code session active"
-    },
-    logs: [{
-      timestamp: new Date().toISOString(),
-      type: "system",
-      message: "Monitor server started"
-    }]
-  }, null, 2));
+// Init data files
+function initFile(file, defaultData) {
+  if (!fs.existsSync(file)) {
+    fs.writeFileSync(file, JSON.stringify(defaultData, null, 2));
+  }
 }
 
-// Init messages file if missing
-if (!fs.existsSync(MESSAGES_FILE)) {
-  fs.writeFileSync(MESSAGES_FILE, JSON.stringify([], null, 2));
-}
+initFile(STATUS_FILE, {
+  usage: {
+    status: "active", limitHit: false, limitResetTime: null,
+    lastUpdated: new Date().toISOString(),
+    sessionStarted: new Date().toISOString(),
+    notes: "Claude Code session active"
+  },
+  logs: [{ timestamp: new Date().toISOString(), type: "system", message: "Monitor server started" }]
+});
+initFile(MESSAGES_FILE, []);
+initFile(KANBAN_FILE, {
+  columns: [
+    { id: "backlog", title: "Backlog", tasks: [] },
+    { id: "inprogress", title: "In Progress", tasks: [] },
+    { id: "done", title: "Done", tasks: [] }
+  ]
+});
+initFile(NOTES_FILE, []);
 
-// Init kanban file if missing
-if (!fs.existsSync(KANBAN_FILE)) {
-  fs.writeFileSync(KANBAN_FILE, JSON.stringify({
-    columns: [
-      {"id": "backlog", "title": "Backlog", "tasks": []},
-      {"id": "inprogress", "title": "In Progress", "tasks": []},
-      {"id": "done", "title": "Done", "tasks": []}
-    ]
-  }, null, 2));
-}
+// ===== SECURITY =====
 
-app.use(express.json());
+// Helmet for security headers (CSP, XSS protection, etc)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:"],
+      connectSrc: ["'self'"],
+    }
+  },
+  crossOriginEmbedderPolicy: false,
+}));
+
+// Rate limit on login - 5 attempts per 15 minutes per IP
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { ok: false, error: 'Too many login attempts. Try again in 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// General API rate limit - 100 requests per minute
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/', apiLimiter);
+app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Password: "letmein2026"
+// Hash the password at startup for constant-time comparison
 const PASSWORD = 'bigdog';
+const PASSWORD_HASH = crypto.createHash('sha256').update(PASSWORD).digest('hex');
 
-// Simple token-based auth
 function generateToken() {
   return crypto.randomBytes(32).toString('hex');
 }
 
-const validTokens = new Set();
+// Store tokens with expiry
+const validTokens = new Map();
 
-// Login endpoint
-app.post('/api/login', (req, res) => {
+// Clean expired tokens every hour
+setInterval(() => {
+  const now = Date.now();
+  for (const [token, expiry] of validTokens) {
+    if (now > expiry) validTokens.delete(token);
+  }
+}, 60 * 60 * 1000);
+
+// Login endpoint with rate limiting
+app.post('/api/login', loginLimiter, (req, res) => {
   const { password } = req.body;
-  if (password === PASSWORD) {
+  if (!password || typeof password !== 'string') {
+    return res.status(400).json({ ok: false, error: 'invalid request' });
+  }
+
+  // Constant-time comparison via hash
+  const inputHash = crypto.createHash('sha256').update(password).digest('hex');
+  if (crypto.timingSafeEqual(Buffer.from(inputHash), Buffer.from(PASSWORD_HASH))) {
     const token = generateToken();
-    validTokens.add(token);
-    // Expire token after 24h
-    setTimeout(() => validTokens.delete(token), 24 * 60 * 60 * 1000);
+    validTokens.set(token, Date.now() + 24 * 60 * 60 * 1000);
     res.json({ ok: true, token });
   } else {
-    res.status(401).json({ ok: false, error: 'wrong password' });
+    // Small delay to slow brute force
+    setTimeout(() => {
+      res.status(401).json({ ok: false, error: 'wrong password' });
+    }, 500);
   }
 });
 
 // Auth middleware
 function auth(req, res, next) {
-  const token = req.headers['authorization']?.replace('Bearer ', '');
-  if (token && validTokens.has(token)) {
+  const header = req.headers['authorization'];
+  if (!header || !header.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'unauthorized' });
+  }
+  const token = header.slice(7);
+  const expiry = validTokens.get(token);
+  if (expiry && Date.now() < expiry) {
     next();
   } else {
+    if (expiry) validTokens.delete(token);
     res.status(401).json({ error: 'unauthorized' });
   }
 }
 
-// Get status
+// ===== HELPER =====
+function readJSON(file) { return JSON.parse(fs.readFileSync(file, 'utf8')); }
+function writeJSON(file, data) { fs.writeFileSync(file, JSON.stringify(data, null, 2)); }
+
+// ===== STATUS =====
 app.get('/api/status', auth, (req, res) => {
-  try {
-    const data = JSON.parse(fs.readFileSync(STATUS_FILE, 'utf8'));
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: 'failed to read status' });
-  }
+  try { res.json(readJSON(STATUS_FILE)); }
+  catch { res.status(500).json({ error: 'failed to read status' }); }
 });
 
-// Get messages from user to Claude
+// ===== MESSAGES =====
 app.get('/api/messages', auth, (req, res) => {
-  try {
-    const data = JSON.parse(fs.readFileSync(MESSAGES_FILE, 'utf8'));
-    res.json(data);
-  } catch (err) {
-    res.json([]);
-  }
+  try { res.json(readJSON(MESSAGES_FILE)); }
+  catch { res.json([]); }
 });
 
-// Send message from user to Claude
 app.post('/api/messages', auth, (req, res) => {
   const { message } = req.body;
-  if (!message) return res.status(400).json({ error: 'no message' });
+  if (!message || typeof message !== 'string') return res.status(400).json({ error: 'invalid message' });
+  const sanitized = message.trim().slice(0, 2000);
 
   try {
-    const messages = JSON.parse(fs.readFileSync(MESSAGES_FILE, 'utf8'));
-    const entry = {
-      id: Date.now().toString(),
-      timestamp: new Date().toISOString(),
-      from: 'user',
-      message: message.trim(),
-      read: false
-    };
+    const messages = readJSON(MESSAGES_FILE);
+    const entry = { id: Date.now().toString(), timestamp: new Date().toISOString(), from: 'user', message: sanitized, read: false };
     messages.push(entry);
-    fs.writeFileSync(MESSAGES_FILE, JSON.stringify(messages, null, 2));
+    if (messages.length > 500) messages.splice(0, messages.length - 500);
+    writeJSON(MESSAGES_FILE, messages);
 
-    // Also add to status logs
-    const status = JSON.parse(fs.readFileSync(STATUS_FILE, 'utf8'));
-    status.logs.push({
-      timestamp: new Date().toISOString(),
-      type: 'user',
-      message: message.trim()
-    });
-    fs.writeFileSync(STATUS_FILE, JSON.stringify(status, null, 2));
+    const status = readJSON(STATUS_FILE);
+    status.logs.push({ timestamp: new Date().toISOString(), type: 'user', message: sanitized });
+    if (status.logs.length > 200) status.logs.splice(0, status.logs.length - 200);
+    writeJSON(STATUS_FILE, status);
 
     res.json({ ok: true, entry });
-  } catch (err) {
-    res.status(500).json({ error: 'failed to save message' });
-  }
+  } catch { res.status(500).json({ error: 'failed to save message' }); }
 });
 
-// ===== KANBAN ENDPOINTS =====
-
-// Get kanban data
-app.get('/api/kanban', auth, (req, res) => {
+// ===== HEALTH =====
+app.get('/api/health', auth, (req, res) => {
+  const { execSync } = require('child_process');
+  const run = (cmd) => { try { return execSync(cmd, { timeout: 3000 }).toString().trim(); } catch { return ''; } };
   try {
-    const data = JSON.parse(fs.readFileSync(KANBAN_FILE, 'utf8'));
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: 'failed to read kanban data' });
-  }
+    const memInfo = (() => {
+      try {
+        const mem = run('free -m').split('\n')[1].split(/\s+/);
+        return { totalMB: parseInt(mem[1]), usedMB: parseInt(mem[2]), freeMB: parseInt(mem[3]) };
+      } catch { return { totalMB: 0, usedMB: 0, freeMB: 0 }; }
+    })();
+    const diskInfo = (() => {
+      try {
+        const parts = run('df -h /').split('\n')[1].split(/\s+/);
+        return { total: parts[1], used: parts[2], available: parts[3], usePercent: parts[4] };
+      } catch { return {}; }
+    })();
+    res.json({
+      processes: {
+        claude: run('pgrep -f "claude"').length > 0,
+        tunnel: run('pgrep -f "cloudflared"').length > 0,
+        server: run('pgrep -f "node server"').length > 0,
+        monitor: run('pgrep -f "monitor.sh"').length > 0
+      },
+      system: {
+        uptime: run('uptime -p'),
+        loadAvg: run('cat /proc/loadavg').split(' ').slice(0, 3).join(', '),
+        memory: memInfo,
+        disk: diskInfo
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch { res.status(500).json({ error: 'health check failed' }); }
 });
 
-// Create a new task
+// ===== NOTES =====
+app.get('/api/notes', auth, (req, res) => {
+  try { res.json(readJSON(NOTES_FILE)); }
+  catch { res.json([]); }
+});
+
+app.post('/api/notes', auth, (req, res) => {
+  const { title, content } = req.body;
+  if (!title || typeof title !== 'string') return res.status(400).json({ error: 'title required' });
+
+  try {
+    const notes = readJSON(NOTES_FILE);
+    const note = {
+      id: Date.now().toString(),
+      title: title.trim().slice(0, 200),
+      content: (content || '').trim().slice(0, 10000),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    notes.push(note);
+    writeJSON(NOTES_FILE, notes);
+    res.json({ ok: true, note });
+  } catch { res.status(500).json({ error: 'failed to save note' }); }
+});
+
+app.put('/api/notes/:id', auth, (req, res) => {
+  const { id } = req.params;
+  const { title, content } = req.body;
+  try {
+    const notes = readJSON(NOTES_FILE);
+    const note = notes.find(n => n.id === id);
+    if (!note) return res.status(404).json({ error: 'note not found' });
+    if (title !== undefined) note.title = title.trim().slice(0, 200);
+    if (content !== undefined) note.content = content.trim().slice(0, 10000);
+    note.updatedAt = new Date().toISOString();
+    writeJSON(NOTES_FILE, notes);
+    res.json({ ok: true, note });
+  } catch { res.status(500).json({ error: 'failed to update note' }); }
+});
+
+app.delete('/api/notes/:id', auth, (req, res) => {
+  const { id } = req.params;
+  try {
+    let notes = readJSON(NOTES_FILE);
+    const len = notes.length;
+    notes = notes.filter(n => n.id !== id);
+    if (notes.length === len) return res.status(404).json({ error: 'note not found' });
+    writeJSON(NOTES_FILE, notes);
+    res.json({ ok: true });
+  } catch { res.status(500).json({ error: 'failed to delete note' }); }
+});
+
+// ===== KANBAN =====
+app.get('/api/kanban', auth, (req, res) => {
+  try { res.json(readJSON(KANBAN_FILE)); }
+  catch { res.status(500).json({ error: 'failed to read kanban data' }); }
+});
+
 app.post('/api/kanban/task', auth, (req, res) => {
   const { columnId, title, description } = req.body;
-  if (!columnId || !title) {
-    return res.status(400).json({ error: 'columnId and title are required' });
-  }
-
+  if (!columnId || !title) return res.status(400).json({ error: 'columnId and title required' });
   try {
-    const data = JSON.parse(fs.readFileSync(KANBAN_FILE, 'utf8'));
+    const data = readJSON(KANBAN_FILE);
     const column = data.columns.find(c => c.id === columnId);
-    if (!column) {
-      return res.status(404).json({ error: 'column not found' });
-    }
-
-    const task = {
-      id: Date.now().toString(),
-      title: title.trim(),
-      description: description ? description.trim() : '',
-      createdAt: new Date().toISOString()
-    };
-
+    if (!column) return res.status(404).json({ error: 'column not found' });
+    const task = { id: Date.now().toString(), title: title.trim().slice(0, 200), description: (description || '').trim().slice(0, 1000), createdAt: new Date().toISOString() };
     column.tasks.push(task);
-    fs.writeFileSync(KANBAN_FILE, JSON.stringify(data, null, 2));
+    writeJSON(KANBAN_FILE, data);
     res.json({ ok: true, task });
-  } catch (err) {
-    res.status(500).json({ error: 'failed to create task' });
-  }
+  } catch { res.status(500).json({ error: 'failed to create task' }); }
 });
 
-// Update a task
 app.put('/api/kanban/task/:id', auth, (req, res) => {
   const { id } = req.params;
   const { title, description, columnId } = req.body;
-
   try {
-    const data = JSON.parse(fs.readFileSync(KANBAN_FILE, 'utf8'));
-
-    // Find the task and its current column
-    let task = null;
-    let sourceColumn = null;
+    const data = readJSON(KANBAN_FILE);
+    let task = null, sourceColumn = null;
     for (const col of data.columns) {
       const idx = col.tasks.findIndex(t => t.id === id);
-      if (idx !== -1) {
-        task = col.tasks[idx];
-        sourceColumn = col;
-        break;
-      }
+      if (idx !== -1) { task = col.tasks[idx]; sourceColumn = col; break; }
     }
-
-    if (!task) {
-      return res.status(404).json({ error: 'task not found' });
-    }
-
-    // Update fields
-    if (title !== undefined) task.title = title.trim();
-    if (description !== undefined) task.description = description.trim();
-
-    // Move to different column if columnId changed
+    if (!task) return res.status(404).json({ error: 'task not found' });
+    if (title !== undefined) task.title = title.trim().slice(0, 200);
+    if (description !== undefined) task.description = description.trim().slice(0, 1000);
     if (columnId && columnId !== sourceColumn.id) {
-      const destColumn = data.columns.find(c => c.id === columnId);
-      if (!destColumn) {
-        return res.status(404).json({ error: 'destination column not found' });
-      }
-      // Remove from source
+      const dest = data.columns.find(c => c.id === columnId);
+      if (!dest) return res.status(404).json({ error: 'column not found' });
       sourceColumn.tasks = sourceColumn.tasks.filter(t => t.id !== id);
-      // Add to destination
-      destColumn.tasks.push(task);
+      dest.tasks.push(task);
     }
-
-    fs.writeFileSync(KANBAN_FILE, JSON.stringify(data, null, 2));
+    writeJSON(KANBAN_FILE, data);
     res.json({ ok: true, task });
-  } catch (err) {
-    res.status(500).json({ error: 'failed to update task' });
-  }
+  } catch { res.status(500).json({ error: 'failed to update task' }); }
 });
 
-// Delete a task
 app.delete('/api/kanban/task/:id', auth, (req, res) => {
   const { id } = req.params;
-
   try {
-    const data = JSON.parse(fs.readFileSync(KANBAN_FILE, 'utf8'));
-
+    const data = readJSON(KANBAN_FILE);
     let found = false;
     for (const col of data.columns) {
       const idx = col.tasks.findIndex(t => t.id === id);
-      if (idx !== -1) {
-        col.tasks.splice(idx, 1);
-        found = true;
-        break;
-      }
+      if (idx !== -1) { col.tasks.splice(idx, 1); found = true; break; }
     }
-
-    if (!found) {
-      return res.status(404).json({ error: 'task not found' });
-    }
-
-    fs.writeFileSync(KANBAN_FILE, JSON.stringify(data, null, 2));
+    if (!found) return res.status(404).json({ error: 'task not found' });
+    writeJSON(KANBAN_FILE, data);
     res.json({ ok: true });
-  } catch (err) {
-    res.status(500).json({ error: 'failed to delete task' });
-  }
+  } catch { res.status(500).json({ error: 'failed to delete task' }); }
 });
 
 app.listen(PORT, '127.0.0.1', () => {

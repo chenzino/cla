@@ -1,0 +1,14 @@
+[Unit]
+Description=Claude Code Session Monitor Daemon
+After=network.target claude-monitor-server.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/cla
+ExecStart=/bin/bash /home/ubuntu/cla/monitor.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
