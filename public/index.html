@@ -1451,7 +1451,312 @@
       .stat-item { padding: 10px 12px; }
       .stat-number { font-size: 1.2rem; }
       .notif-dropdown { width: 280px; right: -40px; }
+      .cmd-palette { width: 90vw; max-width: 480px; }
+      .pomodoro-widget { width: 280px; }
     }
+
+    /* ===== COMMAND PALETTE ===== */
+    .cmd-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 500;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 15vh;
+      backdrop-filter: blur(6px);
+      animation: cmdFadeIn 0.15s ease;
+    }
+    @keyframes cmdFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .cmd-palette {
+      background: var(--surface-solid);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 540px;
+      max-width: 90vw;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
+      overflow: hidden;
+      animation: cmdSlideIn 0.2s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes cmdSlideIn { from { transform: translateY(-10px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+    .cmd-input-wrap {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .cmd-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      padding: 0;
+    }
+    .cmd-input::placeholder { color: var(--text-tertiary); }
+    .cmd-results {
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .cmd-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.1s;
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+    }
+    .cmd-item:hover, .cmd-item.active {
+      background: var(--accent-dim);
+      color: var(--text);
+    }
+    .cmd-item .cmd-icon {
+      width: 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+    .cmd-item .cmd-label { flex: 1; }
+    .cmd-item .cmd-shortcut {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+      background: var(--surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    .cmd-section {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-tertiary);
+      padding: 8px 12px 4px;
+      font-weight: 600;
+    }
+
+    /* ===== POMODORO TIMER ===== */
+    .pomodoro-widget {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      width: 300px;
+      margin: 0 auto 16px;
+    }
+    .pomodoro-widget::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .pomo-ring {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 16px;
+    }
+    .pomo-ring svg {
+      width: 160px;
+      height: 160px;
+      transform: rotate(-90deg);
+    }
+    .pomo-ring .pomo-bg {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 6;
+    }
+    .pomo-ring .pomo-progress {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 6;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear;
+      filter: drop-shadow(0 0 6px var(--accent-glow));
+    }
+    .pomo-ring .pomo-progress.break-mode {
+      stroke: var(--green);
+      filter: drop-shadow(0 0 6px var(--green-glow));
+    }
+    .pomo-time {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 2px;
+    }
+    .pomo-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+    .pomo-controls {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .pomo-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .pomo-btn:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+      background: var(--surface-hover);
+    }
+    .pomo-btn.primary {
+      background: linear-gradient(135deg, var(--accent), #6366f1);
+      border: none;
+      color: white;
+      box-shadow: 0 2px 12px rgba(139,124,246,0.25);
+    }
+    .pomo-btn.primary:hover {
+      box-shadow: 0 4px 20px rgba(139,124,246,0.4);
+    }
+    .pomo-sessions {
+      margin-top: 12px;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ===== CRT MODE ===== */
+    body.crt {
+      animation: crtFlicker 0.15s infinite;
+    }
+    body.crt * {
+      text-shadow: 0 0 2px rgba(52,211,153,0.5);
+    }
+    @keyframes crtFlicker {
+      0% { opacity: 0.97; }
+      50% { opacity: 1; }
+      100% { opacity: 0.98; }
+    }
+    body.crt::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.15) 0px,
+        rgba(0,0,0,0.15) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      pointer-events: none;
+      z-index: 1000;
+    }
+    body.crt {
+      --bg: #0a0f0a;
+      --bg2: #0d120d;
+      --surface: rgba(52,211,153,0.04);
+      --surface-hover: rgba(52,211,153,0.08);
+      --surface-solid: #0f150f;
+      --border: rgba(52,211,153,0.12);
+      --border-hover: rgba(52,211,153,0.2);
+      --text: #34d399;
+      --text-secondary: #2a9d6f;
+      --text-tertiary: #1a6648;
+      --accent: #34d399;
+      --accent-dim: rgba(52,211,153,0.12);
+      --accent-glow: rgba(52,211,153,0.3);
+    }
+    body.crt::before {
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(52,211,153,0.04) 0%, transparent 70%);
+    }
+    .crt-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      transition: all 0.3s;
+      flex-shrink: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+    .crt-toggle:hover {
+      border-color: var(--border-hover);
+      color: var(--green);
+      background: rgba(52,211,153,0.08);
+      text-shadow: 0 0 8px var(--green-glow);
+    }
+
+    /* ===== FORTUNE COOKIE ===== */
+    .fortune-cookie {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .fortune-cookie:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .fortune-cookie::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    }
+    .fortune-icon { font-size: 2rem; margin-bottom: 8px; }
+    .fortune-text {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-style: italic;
+      min-height: 24px;
+    }
+    .fortune-hint {
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+      margin-top: 8px;
+    }
+    @keyframes fortuneCrack {
+      0% { transform: scale(1); }
+      15% { transform: scale(1.1) rotate(-5deg); }
+      30% { transform: scale(0.9) rotate(5deg); }
+      45% { transform: scale(1.15) rotate(-3deg); }
+      60% { transform: scale(1); }
+      100% { transform: scale(1); }
+    }
+    .fortune-cracking { animation: fortuneCrack 0.6s ease; }
   </style>
 </head>
 <body>
@@ -1493,6 +1798,7 @@
           <span>Connected</span>
         </div>
         <button class="theme-toggle" id="theme-toggle" title="Toggle theme">&#9790;</button>
+        <button class="crt-toggle" id="crt-toggle" title="CRT Mode">CRT</button>
         <div style="position:relative;">
           <button class="notif-bell" id="notif-bell" title="Notifications">&#128276;</button>
           <span class="notif-badge" id="notif-badge"></span>
@@ -1563,6 +1869,32 @@
             <div id="daily-quote" style="font-size:0.84rem;color:var(--text-secondary);line-height:1.6;font-style:italic;">Loading wisdom...</div>
             <div id="quote-author" style="font-size:0.72rem;color:var(--text-tertiary);margin-top:6px;">—</div>
           </div>
+        </div>
+      </div>
+
+      <!-- POMODORO TIMER + FORTUNE -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;" class="fade-in">
+        <div class="pomodoro-widget" style="width:100%;margin:0;">
+          <div class="pomo-ring">
+            <svg viewBox="0 0 160 160">
+              <circle class="pomo-bg" cx="80" cy="80" r="70"/>
+              <circle class="pomo-progress" id="pomo-progress" cx="80" cy="80" r="70"
+                stroke-dasharray="439.82" stroke-dashoffset="0"/>
+            </svg>
+            <div class="pomo-time" id="pomo-time">25:00</div>
+          </div>
+          <div class="pomo-label" id="pomo-label">Focus Time</div>
+          <div class="pomo-controls">
+            <button class="pomo-btn primary" id="pomo-start">Start</button>
+            <button class="pomo-btn" id="pomo-reset">Reset</button>
+          </div>
+          <div class="pomo-sessions" id="pomo-sessions">Sessions: 0</div>
+        </div>
+
+        <div class="fortune-cookie" id="fortune-cookie">
+          <div class="fortune-icon" id="fortune-icon">&#127840;</div>
+          <div class="fortune-text" id="fortune-text">Click to crack open a fortune cookie...</div>
+          <div class="fortune-hint" id="fortune-hint">Tap for developer wisdom</div>
         </div>
       </div>
 
@@ -3090,6 +3422,287 @@ The email was sent in plain text. Obviously.`,
       } catch {}
     };
 
+    // ===== COMMAND PALETTE =====
+    const cmdCommands = [
+      { icon: '&#128200;', label: 'Go to Monitor', shortcut: 'Ctrl+1', action: () => navigateTo('monitor'), section: 'Navigation' },
+      { icon: '&#128203;', label: 'Go to Kanban', shortcut: 'Ctrl+2', action: () => navigateTo('kanban'), section: 'Navigation' },
+      { icon: '&#128221;', label: 'Go to Notes', shortcut: 'Ctrl+3', action: () => navigateTo('notes'), section: 'Navigation' },
+      { icon: '&#127912;', label: 'Go to Gallery', shortcut: 'Ctrl+4', action: () => navigateTo('gallery'), section: 'Navigation' },
+      { icon: '&#10133;', label: 'New Task', shortcut: 'N', action: () => { navigateTo('kanban'); setTimeout(toggleAddForm, 100); }, section: 'Create' },
+      { icon: '&#128196;', label: 'New Note', shortcut: 'N', action: () => { navigateTo('notes'); setTimeout(toggleNoteForm, 100); }, section: 'Create' },
+      { icon: '&#127769;', label: 'Toggle Dark/Light Theme', action: () => { const c = document.body.classList.contains('light') ? 'light' : 'dark'; setTheme(c === 'light' ? 'dark' : 'light'); }, section: 'Settings' },
+      { icon: '&#128250;', label: 'Toggle CRT Mode', action: () => document.getElementById('crt-toggle').click(), section: 'Settings' },
+      { icon: '&#128190;', label: 'Export All Data', action: () => exportData('all'), section: 'Actions' },
+      { icon: '&#128190;', label: 'Export Notes', action: () => exportData('notes'), section: 'Actions' },
+      { icon: '&#128190;', label: 'Export Logs', action: () => exportData('logs'), section: 'Actions' },
+      { icon: '&#128260;', label: 'Refresh Status', action: () => fetchStatus(), section: 'Actions' },
+      { icon: '&#9200;', label: 'Start Pomodoro', action: () => { navigateTo('monitor'); document.getElementById('pomo-start').click(); }, section: 'Actions' },
+      { icon: '&#127840;', label: 'Fortune Cookie', action: () => { navigateTo('monitor'); crackFortune(); }, section: 'Fun' },
+      { icon: '&#10067;', label: 'Keyboard Shortcuts', shortcut: '?', action: () => showShortcutsHelp(), section: 'Help' },
+      { icon: '&#128682;', label: 'Logout', action: () => { sessionStorage.removeItem('monitor_token'); location.reload(); }, section: 'Account' },
+    ];
+
+    let cmdOverlay = null;
+    let cmdActiveIdx = 0;
+    let cmdFiltered = [];
+
+    function openCommandPalette() {
+      if (cmdOverlay) { closeCmdPalette(); return; }
+      cmdOverlay = document.createElement('div');
+      cmdOverlay.className = 'cmd-overlay';
+      cmdOverlay.innerHTML =
+        '<div class="cmd-palette">' +
+        '  <div class="cmd-input-wrap"><input class="cmd-input" id="cmd-input" placeholder="Type a command..." autofocus></div>' +
+        '  <div class="cmd-results" id="cmd-results"></div>' +
+        '</div>';
+      document.body.appendChild(cmdOverlay);
+
+      const input = document.getElementById('cmd-input');
+      cmdActiveIdx = 0;
+      filterCommands('');
+
+      input.addEventListener('input', () => filterCommands(input.value));
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') { e.preventDefault(); cmdActiveIdx = Math.min(cmdActiveIdx + 1, cmdFiltered.length - 1); highlightCmd(); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); cmdActiveIdx = Math.max(cmdActiveIdx - 1, 0); highlightCmd(); }
+        else if (e.key === 'Enter') { e.preventDefault(); if (cmdFiltered[cmdActiveIdx]) { cmdFiltered[cmdActiveIdx].action(); closeCmdPalette(); } }
+        else if (e.key === 'Escape') { closeCmdPalette(); }
+      });
+
+      cmdOverlay.addEventListener('click', (e) => { if (e.target === cmdOverlay) closeCmdPalette(); });
+    }
+
+    function filterCommands(query) {
+      const q = query.toLowerCase();
+      cmdFiltered = q ? cmdCommands.filter(c => c.label.toLowerCase().includes(q)) : [...cmdCommands];
+      cmdActiveIdx = 0;
+      renderCmdResults();
+    }
+
+    function renderCmdResults() {
+      const container = document.getElementById('cmd-results');
+      if (!container) return;
+      if (cmdFiltered.length === 0) {
+        container.innerHTML = '<div class="notif-empty">No matching commands</div>';
+        return;
+      }
+      let lastSection = '';
+      container.innerHTML = cmdFiltered.map((cmd, i) => {
+        let sectionHtml = '';
+        if (cmd.section !== lastSection) {
+          lastSection = cmd.section;
+          sectionHtml = '<div class="cmd-section">' + cmd.section + '</div>';
+        }
+        return sectionHtml +
+          '<div class="cmd-item' + (i === cmdActiveIdx ? ' active' : '') + '" data-idx="' + i + '">' +
+          '  <span class="cmd-icon">' + cmd.icon + '</span>' +
+          '  <span class="cmd-label">' + cmd.label + '</span>' +
+          (cmd.shortcut ? '  <span class="cmd-shortcut">' + cmd.shortcut + '</span>' : '') +
+          '</div>';
+      }).join('');
+
+      container.querySelectorAll('.cmd-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const idx = parseInt(item.dataset.idx);
+          if (cmdFiltered[idx]) { cmdFiltered[idx].action(); closeCmdPalette(); }
+        });
+        item.addEventListener('mouseenter', () => {
+          cmdActiveIdx = parseInt(item.dataset.idx);
+          highlightCmd();
+        });
+      });
+    }
+
+    function highlightCmd() {
+      const items = document.querySelectorAll('.cmd-item');
+      items.forEach((item, i) => {
+        item.classList.toggle('active', parseInt(item.dataset.idx) === cmdActiveIdx);
+      });
+      // Scroll active into view
+      const active = document.querySelector('.cmd-item.active');
+      if (active) active.scrollIntoView({ block: 'nearest' });
+    }
+
+    function closeCmdPalette() {
+      if (cmdOverlay) { cmdOverlay.remove(); cmdOverlay = null; }
+    }
+
+    // Cmd+K / Ctrl+K to open palette
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        if (authToken) openCommandPalette();
+      }
+    });
+
+    // ===== POMODORO TIMER =====
+    let pomoState = 'idle'; // idle, work, break
+    let pomoTime = 25 * 60; // seconds
+    let pomoTotal = 25 * 60;
+    let pomoInterval = null;
+    let pomoSessions = parseInt(localStorage.getItem('pomo_sessions') || '0');
+    const WORK_DURATION = 25 * 60;
+    const BREAK_DURATION = 5 * 60;
+    const CIRCUMFERENCE = 2 * Math.PI * 70; // r=70
+
+    function updatePomoDisplay() {
+      const mins = Math.floor(pomoTime / 60);
+      const secs = pomoTime % 60;
+      document.getElementById('pomo-time').textContent =
+        String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+
+      // Update ring
+      const progress = 1 - (pomoTime / pomoTotal);
+      const offset = CIRCUMFERENCE * (1 - progress);
+      const ring = document.getElementById('pomo-progress');
+      ring.style.strokeDashoffset = offset;
+      ring.classList.toggle('break-mode', pomoState === 'break');
+
+      document.getElementById('pomo-label').textContent =
+        pomoState === 'break' ? 'Break Time' :
+        pomoState === 'work' ? 'Focus Time' : 'Ready';
+
+      document.getElementById('pomo-start').textContent =
+        pomoState === 'idle' ? 'Start' : 'Pause';
+
+      document.getElementById('pomo-sessions').textContent = 'Sessions: ' + pomoSessions;
+    }
+
+    document.getElementById('pomo-start').addEventListener('click', () => {
+      if (pomoInterval) {
+        // Pause
+        clearInterval(pomoInterval);
+        pomoInterval = null;
+        document.getElementById('pomo-start').textContent = 'Resume';
+        return;
+      }
+      if (pomoState === 'idle') {
+        pomoState = 'work';
+        pomoTime = WORK_DURATION;
+        pomoTotal = WORK_DURATION;
+      }
+      pomoInterval = setInterval(() => {
+        pomoTime--;
+        if (pomoTime <= 0) {
+          clearInterval(pomoInterval);
+          pomoInterval = null;
+          if (pomoState === 'work') {
+            pomoSessions++;
+            localStorage.setItem('pomo_sessions', pomoSessions);
+            pomoState = 'break';
+            pomoTime = BREAK_DURATION;
+            pomoTotal = BREAK_DURATION;
+            addNotification('Pomodoro complete! Take a 5-min break.', 'success');
+            toast('Focus session complete! Time for a break.');
+            // Auto-start break
+            pomoInterval = setInterval(function breakTick() {
+              pomoTime--;
+              if (pomoTime <= 0) {
+                clearInterval(pomoInterval);
+                pomoInterval = null;
+                pomoState = 'idle';
+                pomoTime = WORK_DURATION;
+                pomoTotal = WORK_DURATION;
+                addNotification('Break over! Ready for another session.', 'info');
+                toast('Break over! Ready to focus again.');
+              }
+              updatePomoDisplay();
+            }, 1000);
+          } else {
+            pomoState = 'idle';
+            pomoTime = WORK_DURATION;
+            pomoTotal = WORK_DURATION;
+          }
+        }
+        updatePomoDisplay();
+      }, 1000);
+      updatePomoDisplay();
+    });
+
+    document.getElementById('pomo-reset').addEventListener('click', () => {
+      if (pomoInterval) clearInterval(pomoInterval);
+      pomoInterval = null;
+      pomoState = 'idle';
+      pomoTime = WORK_DURATION;
+      pomoTotal = WORK_DURATION;
+      updatePomoDisplay();
+    });
+
+    updatePomoDisplay();
+
+    // ===== CRT MODE =====
+    const crtToggle = document.getElementById('crt-toggle');
+    function setCRT(on) {
+      document.body.classList.toggle('crt', on);
+      // If CRT is on, disable light theme
+      if (on) document.body.classList.remove('light');
+      localStorage.setItem('monitor_crt', on ? 'on' : 'off');
+    }
+    if (localStorage.getItem('monitor_crt') === 'on') setCRT(true);
+    crtToggle.addEventListener('click', () => {
+      setCRT(!document.body.classList.contains('crt'));
+    });
+
+    // ===== FORTUNE COOKIE =====
+    const fortunes = [
+      "A segfault in production is just an unplanned feature deprecation.",
+      "The best code is no code. The second best is code that deletes code.",
+      "Your git stash contains the key to solving this week's hardest bug.",
+      "An unhandled promise rejection approaches. Await it with grace.",
+      "The senior dev who reviewed your PR was once a junior who googled everything too.",
+      "You will refactor this function three times. The third time will be beautiful.",
+      "A wild race condition appears! It only manifests on Tuesdays.",
+      "The docs lie. Read the source, Luke.",
+      "Your next coffee will trigger the insight that fixes the memory leak.",
+      "There is no cloud. It's just someone else's computer crying in a data center.",
+      "The framework you chose will be deprecated before your project ships.",
+      "You will accidentally push to main. It will fix everything.",
+      "The CSS you wrote at 2am works. You will never understand why.",
+      "Somewhere, a database admin just dropped a production table and hasn't realized yet.",
+      "Your TODO comments are becoming sentient. They demand completion.",
+      "The rubber duck on your desk knows more than your tech lead.",
+      "Abandon regex. Embrace string splitting. Find inner peace.",
+      "npm install solved the problem. npm install will cause the next one.",
+      "Your code review comment about naming conventions will start a 47-message thread.",
+      "The 10x developer was the friends we made along the way.",
+      "A merge conflict is just two developers caring about the same code.",
+      "Stack Overflow's greatest hits were written by people more confused than you.",
+      "Your production logs will reveal a haiku hidden in the error messages.",
+      "The build will fail. But it will fail faster this time. That's progress.",
+      "You are one semicolon away from enlightenment.",
+      "The API you're calling has a rate limit. It knows what you did last deploy.",
+      "The test that fails locally but passes in CI is trying to teach you something.",
+      "Delete node_modules. Breathe. npm install. Repeat.",
+      "Your past self wrote this code as a warning to your present self.",
+      "The variable you named 'temp' six months ago is now load-bearing."
+    ];
+
+    function crackFortune() {
+      const cookie = document.getElementById('fortune-cookie');
+      const icon = document.getElementById('fortune-icon');
+      const text = document.getElementById('fortune-text');
+      const hint = document.getElementById('fortune-hint');
+
+      cookie.classList.add('fortune-cracking');
+      icon.innerHTML = '&#10024;';
+
+      setTimeout(() => {
+        const fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+        text.textContent = fortune;
+        hint.textContent = 'Click for another fortune';
+        cookie.classList.remove('fortune-cracking');
+        icon.innerHTML = '&#128220;';
+      }, 600);
+
+      setTimeout(() => {
+        icon.innerHTML = '&#127840;';
+      }, 5000);
+    }
+
+    document.getElementById('fortune-cookie').addEventListener('click', crackFortune);
+
   </script>
+</body>
+</html>
 </body>
 </html>
