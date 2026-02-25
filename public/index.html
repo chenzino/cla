@@ -1161,6 +1161,297 @@
       0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100vh) translateX(var(--drift)) rotate(var(--spin)); opacity: 0; }
     }
+
+    /* ===== THEME TOGGLE ===== */
+    .theme-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+      background: var(--surface-hover);
+      transform: rotate(15deg);
+    }
+
+    /* Light theme overrides */
+    body.light {
+      --bg: #f5f5f7;
+      --bg2: #eeeef0;
+      --surface: rgba(0,0,0,0.03);
+      --surface-hover: rgba(0,0,0,0.06);
+      --surface-solid: #ffffff;
+      --border: rgba(0,0,0,0.08);
+      --border-hover: rgba(0,0,0,0.15);
+      --text: #1a1a2e;
+      --text-secondary: #555570;
+      --text-tertiary: #8888a0;
+      --accent: #6d5ce7;
+      --accent-dim: rgba(109,92,231,0.1);
+      --accent-glow: rgba(109,92,231,0.2);
+      --green: #10b981;
+      --green-dim: rgba(16,185,129,0.1);
+      --green-glow: rgba(16,185,129,0.2);
+      --red: #ef4444;
+      --red-dim: rgba(239,68,68,0.1);
+      --yellow: #f59e0b;
+      --yellow-dim: rgba(245,158,11,0.1);
+    }
+    body.light::before {
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(109,92,231,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(16,185,129,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(109,92,231,0.03) 0%, transparent 70%);
+    }
+    body.light .auth-logo,
+    body.light .header-logo {
+      box-shadow: 0 4px 16px rgba(109,92,231,0.2);
+    }
+    body.light ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); }
+    body.light ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.18); }
+
+    /* ===== SKELETON LOADING ===== */
+    @keyframes skeletonShimmer {
+      0% { background-position: -200px 0; }
+      100% { background-position: calc(200px + 100%) 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface) 0px, rgba(255,255,255,0.05) 40px, var(--surface) 80px);
+      background-size: 200px 100%;
+      animation: skeletonShimmer 1.5s ease-in-out infinite;
+      border-radius: 6px;
+    }
+    body.light .skeleton {
+      background: linear-gradient(90deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.08) 40px, rgba(0,0,0,0.04) 80px);
+      background-size: 200px 100%;
+    }
+    .skeleton-line { height: 14px; margin-bottom: 8px; }
+    .skeleton-line.short { width: 60%; }
+    .skeleton-line.medium { width: 80%; }
+    .skeleton-card { height: 80px; }
+
+    /* ===== STATS BAR ===== */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .stat-item:hover::before { opacity: 1; }
+    .stat-item:hover { transform: translateY(-2px); border-color: var(--border-hover); }
+    .stat-number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.02em;
+      transition: all 0.3s;
+    }
+    .stat-number.counting { animation: countPop 0.3s ease; }
+    @keyframes countPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    .stat-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* ===== NOTIFICATION CENTER ===== */
+    .notif-bell {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+    .notif-bell:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+      background: var(--surface-hover);
+    }
+    .notif-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: var(--red);
+      color: white;
+      font-size: 0.55rem;
+      font-weight: 700;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      box-shadow: 0 2px 8px rgba(251,113,133,0.4);
+      animation: notifPop 0.3s ease;
+    }
+    @keyframes notifPop {
+      0% { transform: scale(0); }
+      60% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+    .notif-badge:empty, .notif-badge[data-count="0"] { display: none; }
+    .notif-dropdown {
+      position: absolute;
+      top: 40px;
+      right: 0;
+      width: 320px;
+      max-height: 400px;
+      overflow-y: auto;
+      background: var(--surface-solid);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.4);
+      z-index: 150;
+      display: none;
+    }
+    .notif-dropdown.open { display: block; }
+    .notif-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .notif-clear {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 0.68rem;
+      cursor: pointer;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+    }
+    .notif-clear:hover { text-decoration: underline; }
+    .notif-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+      cursor: default;
+    }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item:hover { background: var(--surface-hover); }
+    .notif-item.unread { border-left: 3px solid var(--accent); }
+    .notif-item-title {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .notif-item-time {
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+    }
+    .notif-empty {
+      padding: 24px 16px;
+      text-align: center;
+      color: var(--text-tertiary);
+      font-size: 0.82rem;
+    }
+
+    /* ===== MICRO-INTERACTIONS ===== */
+    .btn, .btn-send, .btn-add-task, .kanban-task-btn, .nav-link {
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    .btn:active, .btn-send:active, .btn-add-task:active {
+      transform: scale(0.96);
+    }
+    .card {
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s ease;
+    }
+    .card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15), 0 0 0 1px var(--border-hover);
+    }
+    .kanban-task-card {
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    .kanban-task-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2), 0 0 0 1px var(--border-hover);
+    }
+    .note-card {
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    .note-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .section {
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .section:hover {
+      border-color: var(--border-hover);
+    }
+    /* Ripple effect for buttons */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      transform: scale(0);
+      animation: rippleAnim 0.6s ease-out;
+      pointer-events: none;
+    }
+    @keyframes rippleAnim {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    @media (max-width: 600px) {
+      .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .stat-item { padding: 10px 12px; }
+      .stat-number { font-size: 1.2rem; }
+      .notif-dropdown { width: 280px; right: -40px; }
+    }
   </style>
 </head>
 <body>
@@ -1201,6 +1492,20 @@
           <div class="conn-dot"></div>
           <span>Connected</span>
         </div>
+        <button class="theme-toggle" id="theme-toggle" title="Toggle theme">&#9790;</button>
+        <div style="position:relative;">
+          <button class="notif-bell" id="notif-bell" title="Notifications">&#128276;</button>
+          <span class="notif-badge" id="notif-badge"></span>
+          <div class="notif-dropdown" id="notif-dropdown">
+            <div class="notif-header">
+              <span>Notifications</span>
+              <button class="notif-clear" id="notif-clear">Clear all</button>
+            </div>
+            <div id="notif-list">
+              <div class="notif-empty">No notifications yet</div>
+            </div>
+          </div>
+        </div>
         <button class="btn btn-danger" id="logout-btn">Logout</button>
       </div>
     </header>
@@ -1223,6 +1528,30 @@
         <div class="card">
           <div class="label">Last Sync</div>
           <div class="value dim" id="card-updated">--</div>
+        </div>
+      </div>
+
+      <!-- STATS BAR -->
+      <div class="stats-bar fade-in" id="stats-bar">
+        <div class="stat-item">
+          <div class="stat-number" id="stat-tasks">-</div>
+          <div class="stat-label">Total Tasks</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="stat-done">-</div>
+          <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="stat-notes">-</div>
+          <div class="stat-label">Notes</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="stat-messages">-</div>
+          <div class="stat-label">Messages</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="stat-uptime">-</div>
+          <div class="stat-label">Days Up</div>
         </div>
       </div>
 
@@ -2543,8 +2872,224 @@ The email was sent in plain text. Obviously.`,
       if (targetColumnId === 'done') fireConfetti();
     };
 
+    // ===== THEME TOGGLE =====
+    const themeToggle = document.getElementById('theme-toggle');
+    function setTheme(theme) {
+      document.body.classList.toggle('light', theme === 'light');
+      themeToggle.innerHTML = theme === 'light' ? '&#9728;' : '&#9790;';
+      localStorage.setItem('monitor_theme', theme);
+    }
+    // Load saved theme
+    const savedTheme = localStorage.getItem('monitor_theme') || 'dark';
+    setTheme(savedTheme);
+    themeToggle.addEventListener('click', () => {
+      const current = document.body.classList.contains('light') ? 'light' : 'dark';
+      setTheme(current === 'light' ? 'dark' : 'light');
+    });
+
+    // ===== NOTIFICATION CENTER =====
+    let notifications = JSON.parse(localStorage.getItem('monitor_notifications') || '[]');
+    const notifBell = document.getElementById('notif-bell');
+    const notifDropdown = document.getElementById('notif-dropdown');
+    const notifBadge = document.getElementById('notif-badge');
+    const notifList = document.getElementById('notif-list');
+    const notifClear = document.getElementById('notif-clear');
+
+    function addNotification(title, type) {
+      const notif = {
+        id: Date.now().toString(),
+        title: title,
+        type: type || 'info',
+        time: new Date().toISOString(),
+        read: false
+      };
+      notifications.unshift(notif);
+      if (notifications.length > 50) notifications = notifications.slice(0, 50);
+      localStorage.setItem('monitor_notifications', JSON.stringify(notifications));
+      renderNotifications();
+    }
+
+    function renderNotifications() {
+      const unread = notifications.filter(n => !n.read).length;
+      notifBadge.textContent = unread > 0 ? unread : '';
+      notifBadge.dataset.count = unread;
+
+      if (notifications.length === 0) {
+        notifList.innerHTML = '<div class="notif-empty">No notifications yet</div>';
+        return;
+      }
+      notifList.innerHTML = notifications.slice(0, 20).map(n => {
+        const ago = timeAgo(new Date(n.time));
+        return '<div class="notif-item ' + (n.read ? '' : 'unread') + '" data-id="' + n.id + '">' +
+          '<div class="notif-item-title">' + esc(n.title) + '</div>' +
+          '<div class="notif-item-time">' + ago + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function timeAgo(date) {
+      const s = Math.floor((Date.now() - date.getTime()) / 1000);
+      if (s < 60) return 'just now';
+      if (s < 3600) return Math.floor(s / 60) + 'm ago';
+      if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+      return Math.floor(s / 86400) + 'd ago';
+    }
+
+    notifBell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notifDropdown.classList.toggle('open');
+      if (notifDropdown.classList.contains('open')) {
+        // Mark all as read
+        notifications.forEach(n => n.read = true);
+        localStorage.setItem('monitor_notifications', JSON.stringify(notifications));
+        setTimeout(renderNotifications, 300);
+      }
+    });
+
+    notifClear.addEventListener('click', () => {
+      notifications = [];
+      localStorage.setItem('monitor_notifications', JSON.stringify(notifications));
+      renderNotifications();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!notifDropdown.contains(e.target) && e.target !== notifBell) {
+        notifDropdown.classList.remove('open');
+      }
+    });
+
+    renderNotifications();
+
+    // Generate notifications on events
+    let lastStatusState = null;
+    const _origFetchStatus2 = fetchStatus;
+    fetchStatus = async function() {
+      await _origFetchStatus2();
+      try {
+        const statusEl = document.getElementById('card-status');
+        const statusText = statusEl?.textContent?.trim();
+        if (lastStatusState && lastStatusState !== statusText) {
+          if (statusText.includes('Limit')) {
+            addNotification('Usage limit hit! Check reset timer.', 'warning');
+          } else if (statusText.includes('Active') && lastStatusState.includes('Limit')) {
+            addNotification('Usage limits reset - back online!', 'success');
+          }
+        }
+        lastStatusState = statusText;
+      } catch {}
+    };
+
+    // ===== STATS BAR =====
+    async function updateStatsBar() {
+      try {
+        const [kanbanResp, notesResp, msgsResp] = await Promise.all([
+          api('/api/kanban'),
+          api('/api/notes'),
+          api('/api/messages')
+        ]);
+        const kanban = await kanbanResp.json();
+        const notes = await notesResp.json();
+        const msgs = await msgsResp.json();
+
+        const totalTasks = kanban.columns ? kanban.columns.reduce((sum, c) => sum + c.tasks.length, 0) : 0;
+        const doneTasks = kanban.columns ? (kanban.columns.find(c => c.id === 'done')?.tasks.length || 0) : 0;
+
+        animateNumber('stat-tasks', totalTasks);
+        animateNumber('stat-done', doneTasks);
+        animateNumber('stat-notes', Array.isArray(notes) ? notes.length : 0);
+        animateNumber('stat-messages', Array.isArray(msgs) ? msgs.length : 0);
+
+        // Uptime in days from first log entry
+        try {
+          const statusResp = await api('/api/status');
+          const status = await statusResp.json();
+          if (status.usage && status.usage.sessionStarted) {
+            const days = Math.floor((Date.now() - new Date(status.usage.sessionStarted).getTime()) / 86400000);
+            animateNumber('stat-uptime', Math.max(days, 1));
+          }
+        } catch {}
+      } catch {}
+    }
+
+    function animateNumber(id, target) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const current = parseInt(el.textContent) || 0;
+      if (current === target) return;
+      el.classList.add('counting');
+      setTimeout(() => el.classList.remove('counting'), 300);
+
+      if (Math.abs(target - current) <= 1) {
+        el.textContent = target;
+        return;
+      }
+      const step = target > current ? 1 : -1;
+      const steps = Math.min(Math.abs(target - current), 15);
+      const increment = Math.ceil(Math.abs(target - current) / steps);
+      let val = current;
+      const timer = setInterval(() => {
+        val += step * increment;
+        if ((step > 0 && val >= target) || (step < 0 && val <= target)) {
+          val = target;
+          clearInterval(timer);
+        }
+        el.textContent = val;
+      }, 40);
+    }
+
+    // Update stats periodically
+    if (authToken) {
+      setTimeout(updateStatsBar, 1000);
+      setInterval(updateStatsBar, 30000);
+    }
+
+    // ===== SKELETON LOADING =====
+    function showSkeletons() {
+      // Card skeletons
+      document.querySelectorAll('.card .value').forEach(el => {
+        if (el.textContent.includes('Loading') || el.textContent === '--') {
+          el.innerHTML = '<div class="skeleton skeleton-line short" style="height:20px;margin:0;display:inline-block;width:60px;"></div>';
+        }
+      });
+    }
+    // Show skeleton when page loads
+    if (authToken) showSkeletons();
+
+    // ===== MICRO-INTERACTION RIPPLE =====
+    function addRipple(e) {
+      const btn = e.currentTarget;
+      const rect = btn.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+      ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+      btn.style.position = 'relative';
+      btn.style.overflow = 'hidden';
+      btn.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }
+    document.querySelectorAll('.btn-send, .btn-add-task').forEach(btn => {
+      btn.addEventListener('click', addRipple);
+    });
+
+    // ===== NOTIFICATION ON NEW MESSAGE =====
+    let prevMessageCount = null;
+    const _origFetchStatusForNotif = fetchStatus;
+    fetchStatus = async function() {
+      await _origFetchStatusForNotif();
+      try {
+        const msgsResp = await api('/api/messages');
+        const msgs = await msgsResp.json();
+        if (prevMessageCount !== null && msgs.length > prevMessageCount) {
+          const diff = msgs.length - prevMessageCount;
+          addNotification(diff + ' new message' + (diff > 1 ? 's' : '') + ' received', 'info');
+        }
+        prevMessageCount = msgs.length;
+      } catch {}
+    };
+
   </script>
-</body>
-</html>
 </body>
 </html>
