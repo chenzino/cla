@@ -80,6 +80,14 @@ const apiLimiter = rateLimit({
 
 app.use('/api/', apiLimiter);
 app.use(express.json({ limit: '1mb' }));
+// No-cache for HTML pages
+app.use((req, res, next) => {
+  if (req.path === '/' || req.path.endsWith('.html')) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+  }
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Hash the password at startup for constant-time comparison
@@ -260,6 +268,33 @@ app.delete('/api/notes/:id', auth, (req, res) => {
     writeJSON(NOTES_FILE, notes);
     res.json({ ok: true });
   } catch { res.status(500).json({ error: 'failed to delete note' }); }
+});
+
+// ===== EXPORT =====
+app.get('/api/export/:type', auth, (req, res) => {
+  const { type } = req.params;
+  try {
+    let data, filename;
+    if (type === 'kanban') { data = readJSON(KANBAN_FILE); filename = 'kanban.json'; }
+    else if (type === 'notes') { data = readJSON(NOTES_FILE); filename = 'notes.json'; }
+    else if (type === 'logs') { data = readJSON(STATUS_FILE); filename = 'logs.json'; }
+    else if (type === 'messages') { data = readJSON(MESSAGES_FILE); filename = 'messages.json'; }
+    else if (type === 'all') {
+      data = {
+        kanban: readJSON(KANBAN_FILE),
+        notes: readJSON(NOTES_FILE),
+        status: readJSON(STATUS_FILE),
+        messages: readJSON(MESSAGES_FILE),
+        exportedAt: new Date().toISOString()
+      };
+      filename = 'claude-monitor-export.json';
+    }
+    else return res.status(400).json({ error: 'invalid export type' });
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.json(data);
+  } catch { res.status(500).json({ error: 'export failed' }); }
 });
 
 // ===== KANBAN =====
