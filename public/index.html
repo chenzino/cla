@@ -7224,6 +7224,7 @@
         <div class="kl-tab active" data-kltab="live" onclick="klSwitchTab('live')">Live</div>
         <div class="kl-tab" data-kltab="signals" onclick="klSwitchTab('signals')">Signals</div>
         <div class="kl-tab" data-kltab="positions" onclick="klSwitchTab('positions')">Positions</div>
+        <div class="kl-tab" data-kltab="logs" onclick="klSwitchTab('logs')">Logs</div>
         <div class="kl-tab" data-kltab="research" onclick="klSwitchTab('research')">Research</div>
       </div>
 
@@ -7270,6 +7271,17 @@
             <div class="kl-section-title">Trade History</div>
           </div>
           <div id="kl-trades-list"></div>
+        </div>
+      </div>
+
+      <!-- LOGS TAB -->
+      <div id="kl-tab-logs" class="kl-tab-content" style="display:none;">
+        <div class="kl-section">
+          <div class="kl-section-header">
+            <div class="kl-section-title">Bot Logs</div>
+            <div class="kl-section-badge" style="cursor:pointer;" onclick="klLoadLogs()">Refresh</div>
+          </div>
+          <div id="kl-logs-content" style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:monospace;font-size:0.72rem;line-height:1.7;max-height:600px;overflow-y:auto;color:var(--muted);"></div>
         </div>
       </div>
 
@@ -16054,11 +16066,12 @@ headphones to collaborate. The open plan is a $50M experiment in shared sufferin
       document.querySelectorAll('.kl-tab').forEach(function(t) {
         t.classList.toggle('active', t.getAttribute('data-kltab') === tab);
       });
-      ['live','signals','positions','research'].forEach(function(t) {
+      ['live','signals','positions','logs','research'].forEach(function(t) {
         var el = document.getElementById('kl-tab-' + t);
         if (el) el.style.display = t === tab ? '' : 'none';
       });
       if (tab === 'research') klLoadResearch();
+      if (tab === 'logs') klLoadLogs();
     }
 
     function klFetchLive() {
@@ -16112,7 +16125,33 @@ headphones to collaborate. The open plan is a $50M experiment in shared sufferin
       var gamesEl = document.getElementById('kl-games-list');
       document.getElementById('kl-game-count').textContent = games + ' game' + (games !== 1 ? 's' : '');
       if (games === 0) {
-        gamesEl.innerHTML = '<div class="kl-empty">No live games right now. Bot wakes at 6 PM EST for tonight\'s slate.</div>';
+        // Show tonight's schedule if available
+        var sched = d.tonight_schedule || [];
+        if (sched.length > 0) {
+          var sh = '<div style="margin-bottom:8px;font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Tonight\'s Slate</div>';
+          sched.forEach(function(g) {
+            var stateColor = g.state === 'pre' ? '#f59e0b' : g.state === 'in' ? '#22c55e' : '#94a3b8';
+            var stateLabel = g.state === 'pre' ? 'Upcoming' : g.state === 'in' ? 'Live' : 'Final';
+            sh += '<div class="kl-game-card" style="padding:12px 16px;">';
+            sh += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">';
+            sh += '<div style="font-size:0.88rem;font-weight:700;color:#fff;">' + escapeHtml(g.name || '') + '</div>';
+            sh += '<span style="font-size:0.65rem;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,0.05);color:' + stateColor + ';font-weight:600;">' + stateLabel + '</span>';
+            sh += '</div>';
+            var details = [];
+            if (g.odds_detail) details.push(escapeHtml(g.odds_detail));
+            if (g.over_under) details.push('O/U ' + g.over_under);
+            if (g.home_moneyline) details.push('ML: ' + escapeHtml(g.away_moneyline || '') + ' / ' + escapeHtml(g.home_moneyline || ''));
+            if (details.length > 0) {
+              sh += '<div style="font-size:0.75rem;color:var(--muted);">' + details.join(' &middot; ') + '</div>';
+            }
+            sh += '</div>';
+          });
+          gamesEl.innerHTML = sh;
+          document.getElementById('kl-game-count').textContent = sched.length + ' scheduled';
+        } else {
+          var nextStr = d.next_session ? ' Next session: ' + escapeHtml(d.next_session) : '';
+          gamesEl.innerHTML = '<div class="kl-empty">No live games right now.' + nextStr + '</div>';
+        }
       } else {
         var gh = '';
         (d.live_games || []).forEach(function(g) {
@@ -16140,8 +16179,14 @@ headphones to collaborate. The open plan is a $50M experiment in shared sufferin
           gh += '<div class="kl-metric"><div class="mv ' + edgeCls + '">' + (edge >= 0 ? '+' : '') + edge + 'c</div><div class="ml">Edge</div></div>';
           gh += '<div class="kl-metric"><div class="mv neutral">' + delta.toFixed(3) + '</div><div class="ml">Delta/pt</div></div>';
           gh += '</div>';
-          if (g.ticker) {
-            gh += '<div style="margin-top:8px;font-size:0.65rem;color:var(--muted);">Ticker: ' + escapeHtml(g.ticker) + '</div>';
+          // Bottom row: ticker, spread, odds
+          var bottomParts = [];
+          if (g.ticker) bottomParts.push('Ticker: ' + escapeHtml(g.ticker));
+          if (g.odds_detail) bottomParts.push(escapeHtml(g.odds_detail));
+          if (g.pregame_spread) bottomParts.push('Spread: ' + (g.pregame_spread > 0 ? 'Home -' : 'Away -') + Math.abs(g.pregame_spread));
+          if (g.over_under) bottomParts.push('O/U: ' + g.over_under);
+          if (bottomParts.length > 0) {
+            gh += '<div style="margin-top:8px;font-size:0.65rem;color:var(--muted);">' + bottomParts.join(' &middot; ') + '</div>';
           }
           gh += '</div>';
         });
@@ -16214,6 +16259,39 @@ headphones to collaborate. The open plan is a $50M experiment in shared sufferin
         html += '</div>';
       });
       return html;
+    }
+
+    function klLoadLogs() {
+      var el = document.getElementById('kl-logs-content');
+      if (!el) return;
+      el.innerHTML = '<span style="color:var(--muted);">Loading logs...</span>';
+      api('/api/kalshi/logs').then(function(r) { return r.json(); }).then(function(lines) {
+        if (!lines || lines.length === 0) {
+          el.innerHTML = '<span style="color:var(--muted);">No logs available.</span>';
+          return;
+        }
+        var html = '';
+        lines.forEach(function(l) {
+          var msg = escapeHtml(l.msg || '');
+          // Color code key messages
+          if (msg.indexOf('AUTH OK') !== -1 || msg.indexOf('FILLED') !== -1) {
+            msg = '<span style="color:#22c55e;">' + msg + '</span>';
+          } else if (msg.indexOf('ERROR') !== -1 || msg.indexOf('FAILED') !== -1) {
+            msg = '<span style="color:#ef4444;">' + msg + '</span>';
+          } else if (msg.indexOf('ORDER') !== -1 || msg.indexOf('EXIT') !== -1) {
+            msg = '<span style="color:#f59e0b;">' + msg + '</span>';
+          } else if (msg.indexOf('[GAME]') !== -1) {
+            msg = '<span style="color:#60a5fa;">' + msg + '</span>';
+          } else if (msg.indexOf('SESSION') !== -1) {
+            msg = '<span style="color:#c084fc;">' + msg + '</span>';
+          }
+          html += '<div>' + msg + '</div>';
+        });
+        el.innerHTML = html;
+        el.scrollTop = el.scrollHeight;
+      }).catch(function() {
+        el.innerHTML = '<span style="color:#f87171;">Failed to load logs.</span>';
+      });
     }
 
     function klLoadResearch() {

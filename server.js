@@ -896,6 +896,32 @@ app.get('/api/kalshi/signals', auth, (req, res) => {
   } catch(e) { res.json([]); }
 });
 
+// Kalshi bot logs (last 50 lines from journalctl)
+app.get('/api/kalshi/logs', auth, (req, res) => {
+  const { execSync } = require('child_process');
+  try {
+    const logs = execSync('journalctl -u kalshi-bot --no-pager -n 50 --output=short-iso 2>/dev/null', { timeout: 5000 }).toString();
+    const lines = logs.trim().split('\n').map(l => {
+      const match = l.match(/^(\S+T\S+)\s+\S+\s+\S+\[?\d*\]?:\s*(.*)$/);
+      if (match) return { ts: match[1], msg: match[2] };
+      return { ts: '', msg: l };
+    });
+    res.json(lines);
+  } catch(e) { res.json([]); }
+});
+
+// Kalshi session events for today
+app.get('/api/kalshi/events', auth, (req, res) => {
+  try {
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+    const evtFile = path.join(KALSHI_DATA_DIR, 'events', today + '.jsonl');
+    if (!fs.existsSync(evtFile)) return res.json([]);
+    const lines = fs.readFileSync(evtFile, 'utf8').trim().split('\n').filter(Boolean);
+    const events = lines.map(l => { try { return JSON.parse(l); } catch(e) { return null; } }).filter(Boolean);
+    res.json(events.slice(-100));
+  } catch(e) { res.json([]); }
+});
+
 // Kalshi trades for today
 app.get('/api/kalshi/trades', auth, (req, res) => {
   try {
