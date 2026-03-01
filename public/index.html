@@ -1321,6 +1321,56 @@
       #page-dreams { max-width: 720px; margin: 0 auto; padding: 0 24px 40px; }
     }
 
+    /* ===== HISTORY TEXTBOOK ===== */
+    #page-history { padding: 0 16px 80px; max-width: 1200px; margin: 0 auto; }
+    .hist-container { width: 100%; }
+    .hist-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 0 14px; flex-wrap: wrap; gap: 10px; }
+    .hist-brand { display: flex; align-items: center; gap: 10px; }
+    .hist-logo { font-size: 1.6rem; }
+    .hist-title { font-size: 1.1rem; font-weight: 700; color: #e2e8f0; letter-spacing: -0.02em; }
+    .hist-subtitle { font-size: 0.72rem; color: #94a3b8; letter-spacing: 0.5px; }
+    .hist-progress { font-size: 0.75rem; color: #f59e0b; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); padding: 5px 12px; border-radius: 20px; font-weight: 600; }
+    .hist-layout { display: flex; gap: 20px; min-height: 70vh; }
+    .hist-sidebar { width: 260px; flex-shrink: 0; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 14px; max-height: 80vh; overflow-y: auto; }
+    .hist-sidebar-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #64748b; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .hist-chapter-list { display: flex; flex-direction: column; gap: 4px; }
+    .hist-chapter-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; }
+    .hist-chapter-item:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+    .hist-chapter-item.active { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.25); }
+    .hist-chapter-num { font-size: 0.65rem; font-weight: 700; color: #f59e0b; text-transform: uppercase; letter-spacing: 1px; }
+    .hist-chapter-name { font-size: 0.82rem; font-weight: 600; color: #e2e8f0; margin-top: 2px; }
+    .hist-chapter-years { font-size: 0.68rem; color: #64748b; }
+    .hist-content { flex: 1; min-width: 0; }
+    .hist-welcome { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 40px; text-align: center; }
+    .hist-welcome h2 { font-size: 1.3rem; color: #f59e0b; margin-bottom: 16px; font-weight: 700; }
+    .hist-welcome p { color: #94a3b8; font-size: 0.88rem; line-height: 1.7; max-width: 500px; margin: 0 auto 12px; }
+    .hist-warn { color: #fb7185 !important; font-weight: 600; font-size: 0.78rem !important; background: rgba(251,113,133,0.08); padding: 10px 16px; border-radius: 8px; border: 1px solid rgba(251,113,133,0.2); margin-top: 20px !important; }
+    .hist-reader { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 32px 40px; }
+    .hist-reader-header { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .hist-reader-number { font-size: 0.7rem; font-weight: 700; color: #f59e0b; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+    .hist-reader-header h1 { font-size: 1.6rem; font-weight: 800; color: #f1f5f9; letter-spacing: -0.02em; margin: 0; }
+    .hist-reader-meta { font-size: 0.78rem; color: #64748b; margin-top: 6px; }
+    .hist-reader-body { font-size: 0.92rem; line-height: 1.85; color: #cbd5e1; }
+    .hist-reader-body h2 { font-size: 1.2rem; font-weight: 700; color: #f59e0b; margin: 32px 0 14px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.04); }
+    .hist-reader-body h3 { font-size: 1rem; font-weight: 600; color: #e2e8f0; margin: 24px 0 10px; }
+    .hist-reader-body p { margin-bottom: 16px; }
+    .hist-reader-body strong { color: #f1f5f9; font-weight: 600; }
+    .hist-reader-body em { color: #a78bfa; font-style: italic; }
+    .hist-reader-body blockquote { border-left: 3px solid #f59e0b; padding: 12px 16px; margin: 16px 0; background: rgba(245,158,11,0.04); border-radius: 0 8px 8px 0; font-style: italic; color: #94a3b8; }
+    .hist-reader-body ul, .hist-reader-body ol { margin: 12px 0 16px 20px; }
+    .hist-reader-body li { margin-bottom: 6px; }
+    .hist-reader-body hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 28px 0; }
+    .hist-reader-nav { display: flex; justify-content: space-between; margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); gap: 8px; }
+    .hist-nav-btn { padding: 10px 16px; border-radius: 8px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); color: #f59e0b; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.15s; }
+    .hist-nav-btn:hover { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.4); }
+    .hist-nav-btn:disabled { opacity: 0.3; cursor: default; }
+    @media (max-width: 768px) {
+      .hist-layout { flex-direction: column; }
+      .hist-sidebar { width: 100%; max-height: none; }
+      .hist-reader { padding: 20px 16px; }
+      .hist-reader-header h1 { font-size: 1.2rem; }
+    }
+
     /* ===== KALSHI LIVE TRADING DASHBOARD ===== */
     #page-kalshi { padding: 0 16px 80px; max-width: 960px; margin: 0 auto; }
     .kl-top { display: flex; align-items: center; justify-content: space-between; padding: 18px 0 14px; flex-wrap: wrap; gap: 10px; }
@@ -6072,6 +6122,7 @@
         <a href="#" class="nav-link" data-page="gallery">Gallery</a>
         <a href="#" class="nav-link" data-page="soundcloud">SoundCloud</a>
         <a href="#" class="nav-link" data-page="spinnin">Spinnin'</a>
+        <a href="#" class="nav-link" data-page="history">History</a>
       </nav>
       <div class="header-right">
         <div class="header-search-wrap" id="header-search-wrap">
@@ -6165,6 +6216,7 @@
         <a class="mobile-nav-item" data-page="gallery"><span class="mobile-nav-icon">&#127912;</span><span>Gallery</span></a>
         <a class="mobile-nav-item" data-page="soundcloud"><span class="mobile-nav-icon">&#127925;</span><span>SC</span></a>
         <a class="mobile-nav-item" data-page="spinnin"><span class="mobile-nav-icon">&#127926;</span><span>Spinnin</span></a>
+        <a class="mobile-nav-item" data-page="history"><span class="mobile-nav-icon">&#128218;</span><span>History</span></a>
       </div>
     </div>
 
@@ -7293,6 +7345,53 @@
       <div class="kl-updated" id="kl-updated"></div>
     </div>
 
+    <!-- HISTORY TEXTBOOK PAGE -->
+    <div id="page-history" class="page">
+      <div class="hist-container">
+        <div class="hist-header">
+          <div class="hist-brand">
+            <div class="hist-logo">&#128218;</div>
+            <div>
+              <div class="hist-title">The Unhinged History of the United States</div>
+              <div class="hist-subtitle">A Profane &amp; Historically Accurate Textbook</div>
+            </div>
+          </div>
+          <div class="hist-progress">
+            <span id="hist-chapter-count">0 chapters</span>
+          </div>
+        </div>
+
+        <div class="hist-layout">
+          <!-- Chapter sidebar -->
+          <div class="hist-sidebar" id="hist-sidebar">
+            <div class="hist-sidebar-title">Chapters</div>
+            <div id="hist-chapter-list" class="hist-chapter-list"></div>
+          </div>
+
+          <!-- Chapter content -->
+          <div class="hist-content" id="hist-content">
+            <div class="hist-welcome" id="hist-welcome">
+              <h2>Welcome to the Most Unhinged History Textbook Ever Written</h2>
+              <p>Select a chapter from the sidebar to begin your journey through America's batshit crazy past. Each chapter covers a president, their era, and all the insane events that shaped this ridiculous country.</p>
+              <p class="hist-warn">WARNING: Contains excessive profanity, brutal honesty, and more historical accuracy than your high school textbook ever dreamed of.</p>
+            </div>
+            <div id="hist-reader" class="hist-reader" style="display:none;">
+              <div class="hist-reader-header">
+                <div class="hist-reader-number" id="hist-reader-number"></div>
+                <h1 id="hist-reader-title"></h1>
+                <div class="hist-reader-meta" id="hist-reader-meta"></div>
+              </div>
+              <div class="hist-reader-body" id="hist-reader-body"></div>
+              <div class="hist-reader-nav">
+                <button class="hist-nav-btn" id="hist-prev" onclick="histNav(-1)">&#8592; Previous President</button>
+                <button class="hist-nav-btn" id="hist-next" onclick="histNav(1)">Next President &#8594;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="footer fade-in">
       Auto-refresh <span>15s</span>
       <div class="dot"></div>
@@ -7382,7 +7481,7 @@
     };
 
     // ===== PAGE NAVIGATION =====
-    const PAGES = ['monitor', 'kanban', 'notes', 'tools', 'gallery', 'soundcloud', 'spinnin', 'dreams', 'kalshi'];
+    const PAGES = ['monitor', 'kanban', 'notes', 'tools', 'gallery', 'soundcloud', 'spinnin', 'dreams', 'kalshi', 'history'];
     let currentPage = 'monitor';
 
     // Post-navigation hooks - features register callbacks here instead of monkey-patching
@@ -7429,6 +7528,7 @@
       if (page === 'kanban') fetchKanban();
       if (page === 'notes') fetchNotes();
       if (page === 'gallery') renderGallery();
+      if (page === 'history') histLoadChapters();
       // Run all registered post-navigation hooks
       _navHooks.forEach(fn => { try { fn(page); } catch(e) { console.warn('Nav hook error:', e); } });
     }
@@ -17264,6 +17364,84 @@ headphones to collaborate. The open plan is a $50M experiment in shared sufferin
           });
       }
     })();
+
+    // ===== HISTORY TEXTBOOK =====
+    var histChapters = [];
+    var histCurrentIdx = -1;
+
+    function histLoadChapters() {
+      fetch('/api/history/chapters', { headers: { 'Authorization': 'Bearer ' + authToken } })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          histChapters = data.chapters || [];
+          document.getElementById('hist-chapter-count').textContent = histChapters.length + ' chapters';
+          var list = document.getElementById('hist-chapter-list');
+          list.innerHTML = '';
+          histChapters.forEach(function(ch, i) {
+            var item = document.createElement('div');
+            item.className = 'hist-chapter-item' + (i === histCurrentIdx ? ' active' : '');
+            item.innerHTML = '<div class="hist-chapter-num">Chapter ' + ch.number + '</div><div class="hist-chapter-name">' + ch.president + '</div><div class="hist-chapter-years">' + ch.years + '</div>';
+            item.onclick = function() { histLoadChapter(i); };
+            list.appendChild(item);
+          });
+        });
+    }
+
+    function histLoadChapter(idx) {
+      if (idx < 0 || idx >= histChapters.length) return;
+      histCurrentIdx = idx;
+      var ch = histChapters[idx];
+      fetch('/api/history/chapter/' + ch.number, { headers: { 'Authorization': 'Bearer ' + authToken } })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          document.getElementById('hist-welcome').style.display = 'none';
+          document.getElementById('hist-reader').style.display = 'block';
+          document.getElementById('hist-reader-number').textContent = 'Chapter ' + ch.number;
+          document.getElementById('hist-reader-title').textContent = ch.president;
+          document.getElementById('hist-reader-meta').textContent = ch.years + ' \u2022 President #' + ch.number;
+          document.getElementById('hist-reader-body').innerHTML = histParseMarkdown(data.content);
+          document.getElementById('hist-prev').disabled = idx === 0;
+          document.getElementById('hist-next').disabled = idx === histChapters.length - 1;
+          // Update sidebar active
+          document.querySelectorAll('.hist-chapter-item').forEach(function(el, i) {
+            el.classList.toggle('active', i === idx);
+          });
+          // Scroll to top of reader
+          document.getElementById('hist-reader').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+
+    function histNav(dir) {
+      histLoadChapter(histCurrentIdx + dir);
+    }
+
+    function histParseMarkdown(md) {
+      if (!md) return '';
+      var html = md
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+        .replace(/^---$/gm, '<hr>')
+        .replace(/^\- (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+      // Wrap paragraphs
+      var lines = html.split('\n');
+      var result = [];
+      var inList = false;
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (!line) { result.push(''); continue; }
+        if (line.startsWith('<h') || line.startsWith('<blockquote') || line.startsWith('<hr') || line.startsWith('<ul') || line.startsWith('<li') || line.startsWith('</')) {
+          result.push(line);
+        } else {
+          result.push('<p>' + line + '</p>');
+        }
+      }
+      return result.join('\n');
+    }
 
   </script>
 </body>

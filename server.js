@@ -1927,6 +1927,28 @@ app.post('/api/voice/command', auth, (req, res) => {
   } catch { res.status(500).json({ error: 'voice command processing failed' }); }
 });
 
+// ===== HISTORY TEXTBOOK API =====
+const HISTORY_DIR = path.join('/home/ubuntu/history/chapters');
+
+app.get('/api/history/chapters', auth, (req, res) => {
+  try {
+    const metaFile = path.join('/home/ubuntu/history', 'chapters.json');
+    if (!fs.existsSync(metaFile)) return res.json({ chapters: [] });
+    const data = JSON.parse(fs.readFileSync(metaFile, 'utf8'));
+    res.json(data);
+  } catch (e) { res.json({ chapters: [] }); }
+});
+
+app.get('/api/history/chapter/:num', auth, (req, res) => {
+  try {
+    const num = String(req.params.num).padStart(2, '0');
+    const files = fs.readdirSync(HISTORY_DIR).filter(f => f.startsWith(num + '_'));
+    if (files.length === 0) return res.status(404).json({ error: 'Chapter not found' });
+    const content = fs.readFileSync(path.join(HISTORY_DIR, files[0]), 'utf8');
+    res.json({ content });
+  } catch (e) { res.status(500).json({ error: 'Failed to load chapter' }); }
+});
+
 app.listen(PORT, '127.0.0.1', () => {
   console.log(`Claude Code Monitor running on http://127.0.0.1:${PORT}`);
 });
